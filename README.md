@@ -1,2 +1,24 @@
-# HeroesAndVilains
- SPA en vuejs intitulée "Heroes & Vilains", qui permet de gérer des personnes (plus ou moins gentilles/méchantes) avec des super-pouvoirs, des équipes composées de ces personnes, et des organisations qui fédèrent des équipes.
+# heroesandvilains
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
