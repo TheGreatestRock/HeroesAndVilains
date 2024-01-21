@@ -1,3 +1,5 @@
+import OrganisationsService from '../../services/org.service'
+
 export default {
     namespace: true,
     state: () => ({
@@ -16,6 +18,17 @@ export default {
             state.currentOrganisation = organisation
         }
     },
-    actions: {},
+    actions: {
+        async getOrganisations({commit}) {
+            const organisations = OrganisationsService.getOrganisations()
+
+            if (organisations.error === 0)
+                commit.updateOrganisationsNames(organisations.data)
+            else
+                console.log(organisations.data)
+
+            return organisations
+        }
+    },
     getters: {}
 }
