@@ -33,8 +33,8 @@
         drawer: false,
         routes: [
           { name: 'Home', path: '/', icon: 'mdi-home' },
-          { name: 'Organisations', path: '/organisations', icon: 'mdi-page-1' },
-          { name: 'Teams', path: '/teams', icon: 'mdi-page-2' },
+          { name: 'Organisations', path: '/organisations'},
+          { name: 'Teams', path: '/teams'},
         ],
       };
     },
@@ -42,7 +42,9 @@
       toggleDrawer() {
         this.drawer = !this.drawer;
       },
-      toggleAuthentication() {      
+      toggleAuthentication() { 
+        var audio = new Audio(require('@/assets/pouet.mp3'))
+        audio.play()     
         window.alert("pouet")
       },
       navigate(path) {
