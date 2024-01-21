@@ -4,6 +4,10 @@ export default {
         heroesAliases: [],
         currentHero: null
     }),
+    getters: {
+        getHeroesAliases: state => state.heroesAliases,
+        getCurrentHero: state => state.currentHero
+    },
     mutations: {
         updateHeroesAliases(state, aliases) {
             state.heroesAliases = aliases

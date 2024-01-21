@@ -7,6 +7,11 @@ export default {
         organisationsNames: [],
         currentOrganisation: null
     }),
+    getters: {
+        getOrganisationsPassword: state => state.organisationsPassword,
+        getOrganisationsNames: state => state.organisationsNames,
+        getCurrentOrganisation: state => state.currentOrganisation
+    },
     mutations: {
         updateOrganisationsPassword(state, password) {
             state.organisationsPassword = password
@@ -30,5 +35,4 @@ export default {
             return organisations
         }
     },
-    getters: {}
 }
