@@ -17,5 +17,4 @@ export default {
         }
     },
     actions: {},
-    getters: {}
 }
