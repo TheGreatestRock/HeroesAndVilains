@@ -17,10 +17,21 @@ const routes = [
     {
         path: '/organisations',
         name: 'organisations',
+        component: () => import('../views/OrganisationsViews.vue'),
         children: [
             {
-                path: '/organisations/:name',
-                name: 'organisation',
+                path: '/organisations/',
+                name: 'organisationsList',
+                components: {
+                    organisationMain: () => import('../components/OrganisationsList.vue')
+                }
+            },
+            {
+                path: '/organisations/:id',
+                name: 'organisationDetails',
+                components: {
+                    organisationMain: () => import('../components/OrganisationDetails.vue')
+                }
             }
         ]
     },

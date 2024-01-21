@@ -4,12 +4,12 @@ export default {
     namespace: true,
     state: () => ({
         organisationsPassword: null,
-        organisationsNames: [],
+        organisations: [],
         currentOrganisation: null
     }),
     getters: {
         getOrganisationsPassword: state => state.organisationsPassword,
-        getOrganisationsNames: state => state.organisationsNames,
+        getOrganisations: state => state.organisations,
         getCurrentOrganisation: state => state.currentOrganisation
     },
     mutations: {
@@ -17,18 +17,19 @@ export default {
             state.organisationsPassword = password
         },
         updateOrganisationsNames(state, names) {
-            state.organisationsNames = names
+            state.organisations = names
         },
         updateCurrentOrganisation(state, organisation) {
             state.currentOrganisation = organisation
         }
     },
     actions: {
-        async getOrganisations({commit}) {
-            const organisations = OrganisationsService.getOrganisations()
+        async getOrganisationsData({commit}) {
+            const organisations = await OrganisationsService.getOrganisations()
 
-            if (organisations.error === 0)
-                commit.updateOrganisationsNames(organisations.data)
+            if (organisations.error === 0) {
+                commit('updateOrganisationsNames', organisations.data)
+            }
             else
                 console.log(organisations.data)
 
