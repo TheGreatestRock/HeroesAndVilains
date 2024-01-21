@@ -7,6 +7,6 @@
 
 <script>
   export default {
-    name: "OrganisationsViews"
+    name: "OrganisationsView"
   }
 </script>

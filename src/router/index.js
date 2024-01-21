@@ -17,7 +17,7 @@ const routes = [
     {
         path: '/organisations',
         name: 'organisations',
-        component: () => import('../views/OrganisationsViews.vue'),
+        component: () => import('../views/OrganisationsView.vue'),
         children: [
             {
                 path: '/organisations/',
@@ -38,10 +38,21 @@ const routes = [
     {
         path: '/teams',
         name: 'teams',
+        component: () => import('../views/TeamsView.vue'),
         children: [
             {
-                path: '/teams/:name',
-                name: 'team',
+                path: '/teams/',
+                name: 'teamsList',
+                components: {
+                    teamMain: () => import('../components/TeamsList.vue')
+                }
+            },
+            {
+                path: '/teams/:id',
+                name: 'teamDetails',
+                components: {
+                    teamMain: () => import('../components/TeamDetails.vue')
+                }
             }
         ]
     },

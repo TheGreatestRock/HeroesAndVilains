@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h2>List of all organisations</h2>
+    <h2>List of all teams</h2>
     <v-card
         class="mx-auto"
         max-width="300">
       <v-card-title class="headline">Organisation name</v-card-title>
       <v-list-item-group color="primary">
-        <v-list-item v-for="(item, index) in getOrganisations" :key="index" @click="selectOrganisation(item._id)"
+        <v-list-item v-for="(item, index) in getTeams" :key="index" @click="selectTeam(item._id)"
                      :class="{'list-item-odd': index % 2 === 0, 'list-item-even': index % 2 !== 0}">
           <v-list-item-content>
             <v-list-item-title>{{ item.name }}</v-list-item-title>
@@ -18,33 +18,23 @@
 </template>
 
 <script>
-
 import {mapActions, mapGetters} from "vuex";
 
 export default {
-  name: 'OrganisationList',
+  name: "TeamDetails",
   data: () => ({}),
   computed: {
-    ...mapGetters(['getOrganisations'])
+    ...mapGetters(['getTeams'])
   },
   methods: {
-    ...mapActions(['getOrganisationsData']),
-    selectOrganisation(id) {
-      this.$router.push({name: 'organisationDetails', params: {id: id}})
+    ...mapActions(['getTeamsData']),
+    selectTeam(id) {
+      this.$router.push({name: 'teamDetails', params: {id: id}})
     }
   },
   async mounted() {
-    await this.getOrganisationsData()
+    await this.getTeamsData()
+    console.log(this.getTeams)
   }
 }
 </script>
-
-<style>
-.list-item-odd {
-  background-color: #f5f5f5; /* Light grey background */
-}
-
-.list-item-even {
-  background-color: #ffffff; /* White background */
-}
-</style>
