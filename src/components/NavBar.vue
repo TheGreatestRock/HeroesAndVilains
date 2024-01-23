@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <div>
       <v-app-bar app>
         <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Heroes&Villains</v-toolbar-title>
@@ -24,7 +24,7 @@
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-    </v-app>
+    </div>
   </template>
   
   <script>
@@ -34,11 +34,11 @@
         drawer: false,
         routes: [
           { name: 'Home', path: '/', icon: 'mdi-home'},
-          { name: 'Organisations', path: '/organisations', children: [
+          { name: 'Organisations', path: '/organisations', icon: 'mdi-domain', children: [
             { name: 'Org1', path: '/organisations/org1' },
             { name: 'Org2', path: '/organisations/org2' },
           ]},
-          { name: 'Teams', path: '/teams', children: [
+          { name: 'Teams', path: '/teams', icon: 'mdi-account-group', children: [
             { name: 'Team1', path: '/teams/team1' },
             { name: 'Team2', path: '/teams/team2' },
           ]},
