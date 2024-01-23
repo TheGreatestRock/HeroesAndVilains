@@ -4,7 +4,7 @@
         <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Heroes&Villains</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn @click="toggleAuthentication">s'authentifier</v-btn>
+        <v-btn @click="/*toggleAuthentication*/navigate('/authentication')">S'Authentifier</v-btn>
       </v-app-bar>
   
       <v-navigation-drawer v-model="drawer" app>
@@ -33,14 +33,12 @@
       return {
         drawer: false,
         routes: [
-          { name: 'Home', path: '/', icon: 'mdi-home'},
+          { name: 'Accueil', path: '/', icon: 'mdi-home'},
           { name: 'Organisations', path: '/organisations', icon: 'mdi-domain', children: [
-            { name: 'Org1', path: '/organisations/org1' },
-            { name: 'Org2', path: '/organisations/org2' },
+
           ]},
           { name: 'Teams', path: '/teams', icon: 'mdi-account-group', children: [
-            { name: 'Team1', path: '/teams/team1' },
-            { name: 'Team2', path: '/teams/team2' },
+
           ]},
         ],
       };
@@ -49,17 +47,20 @@
       toggleDrawer() {
         this.drawer = !this.drawer;
       },
-      toggleAuthentication() { 
+      /*toggleAuthentication() { 
         var audio = new Audio(require('@/assets/pouet.mp3'))
         audio.play()     
         window.alert("pouet")
-      },
+      },*/
       navigate(path) {
         if (this.$route.path !== path) {
           this.$router.push(path);
         }
-        this.toggleDrawer();
+        if (this.drawer) this.toggleDrawer();
       },
+    },
+    async mounted() {
+ 
     },
   };
   </script>

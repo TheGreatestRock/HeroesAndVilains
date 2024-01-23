@@ -12,6 +12,7 @@ const routes = [
     {
         path: '/authentication',
         name: 'authentication',
+        component : () => import('../views/AuthenticationView.vue'),
         children: []
     },
     {
