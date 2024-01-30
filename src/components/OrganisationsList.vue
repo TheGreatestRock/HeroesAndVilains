@@ -55,7 +55,7 @@ export default {
   methods: {
     ...mapActions(['getOrganisationsData', 'setCurrentOrganisation']),
     selectOrganisation() {
-      this.$router.push({name: 'organisationDetails'})
+      this.$router.push({name: 'currentOrganisationDetails'})
     },
     createOrganisation() {
 

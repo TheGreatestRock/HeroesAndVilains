@@ -54,7 +54,7 @@ export default {
   methods: {
     ...mapActions(['getTeamsData', 'setCurrentTeam']),
     selectTeam() {
-      this.$router.push({name: 'teamDetails'})
+      this.$router.push({name: 'currentTeamDetails'})
     },
     createTeam() {
 

@@ -28,8 +28,8 @@ const routes = [
                 }
             },
             {
-                path: '/organisations/:id',
-                name: 'organisationDetails',
+                path: '/organisations/current',
+                name: 'currentOrganisationDetails',
                 components: {
                     organisationMain: () => import('../components/OrganisationDetails.vue')
                 }
@@ -49,8 +49,8 @@ const routes = [
                 }
             },
             {
-                path: '/teams/:id',
-                name: 'teamDetails',
+                path: '/teams/current',
+                name: 'currentTeamDetails',
                 components: {
                     teamMain: () => import('../components/TeamDetails.vue')
                 }
