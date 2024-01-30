@@ -29,6 +29,43 @@
       >
       </v-data-table>
     </v-card>
+
+    <v-dialog
+        persistent
+        v-model="showCreateDialog">
+      <v-card>
+        <v-card-title class="text-h5">Create a new team</v-card-title>
+        <v-card-text>
+          <v-container>
+            <!--            TODO : Rajouter une alert pour l'état de la réponse de l'API -->
+            <v-row>
+              <v-text-field
+                  label="Team's name"
+                  v-model="teamCreation.name"
+              />
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn
+              color="red darken-1"
+              text
+              @click="showCreateDialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+              color="blue darken-1"
+              text
+              @click="confirmCreate"
+          >
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+
+    </v-dialog>
   </div>
 </template>
 
@@ -38,7 +75,9 @@ import {mapActions, mapGetters} from "vuex";
 export default {
   name: "TeamDetails",
   data: () => ({
-    search: ''
+    search: '',
+    showCreateDialog: false,
+    teamCreation: {name: ''}
   }),
   computed: {
     ...mapGetters(['getTeams', 'getCurrentTeam']),
@@ -57,7 +96,10 @@ export default {
       this.$router.push({name: 'currentTeamDetails'})
     },
     createTeam() {
-
+      this.showCreateDialog = true
+    },
+    confirmCreate() {
+      console.log(this.teamCreation)
     }
   },
   async mounted() {

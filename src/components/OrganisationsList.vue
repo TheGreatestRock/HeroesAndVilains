@@ -29,6 +29,49 @@
       >
       </v-data-table>
     </v-card>
+
+    <v-dialog
+        persistent
+        v-model="showCreateDialog">
+      <v-card>
+        <v-card-title class="text-h5">Create a new organisation</v-card-title>
+        <v-card-text>
+          <v-container>
+            <!--            TODO : Rajouter une alert pour l'état de la réponse de l'API -->
+            <v-row>
+              <v-text-field
+                  label="Organisation's name"
+                  v-model="organisationCreation.name"
+              />
+            </v-row>
+            <v-row>
+              <v-text-field
+                  label="Organisation's secret"
+                  v-model="organisationCreation.secret"
+              />
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn
+              color="red darken-1"
+              text
+              @click="showCreateDialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+              color="blue darken-1"
+              text
+              @click="confirmCreate"
+          >
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+
+    </v-dialog>
   </div>
 </template>
 
@@ -39,7 +82,9 @@ import {mapActions, mapGetters} from "vuex";
 export default {
   name: 'OrganisationList',
   data: () => ({
-    search: ''
+    search: '',
+    showCreateDialog: false,
+    organisationCreation: {name: '', secret: ''}
   }),
   computed: {
     ...mapGetters(['getOrganisations', 'getCurrentOrganisation']),
@@ -58,7 +103,10 @@ export default {
       this.$router.push({name: 'currentOrganisationDetails'})
     },
     createOrganisation() {
-
+      this.showCreateDialog = true
+    },
+    confirmCreate() {
+      console.log(this.organisationCreation)
     }
   },
   async mounted() {
