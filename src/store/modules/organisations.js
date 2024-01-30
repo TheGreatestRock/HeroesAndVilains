@@ -34,7 +34,9 @@ export default {
                 console.log(organisations.data)
 
             return organisations
+        },
+        async setCurrentOrganisation({commit}, data) {
+            commit('updateCurrentOrganisation', data)
         }
-
     },
 }
