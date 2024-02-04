@@ -16,6 +16,22 @@ export default {
         },
         updateCurrentTeam(state, team) {
             state.currentTeam = team
+        },
+        addHeroTeam(state, data) {
+            state.teams = state.teams.map(team => {
+                if (team.id === data.id) {
+                    return data
+                }
+                return team
+            })
+        },
+        removeHeroTeam(state, data) {
+            state.teams = state.teams.map(team => {
+                if (team.id === data.id) {
+                    return data
+                }
+                return team
+            })
         }
     },
     actions: {
@@ -32,8 +48,29 @@ export default {
         async setCurrentTeam({commit}, data) {
             commit('updateCurrentTeam', data)
         },
-        async createTeam(context, data) {
-            return await TeamService.createTeam(data)
+        async createTeam({commit}, team) {
+            const answer = await TeamService.createTeam(team)
+            if (answer.error === 0) {
+                commit('updateTeams', [...this.getters.getTeams, answer.data])
+            } else
+                console.log(answer.data)
+            return answer
+        },
+        async addHeroToTeam({commit}, data) {
+            const answer = await TeamService.addHeroToTeam(data.id, data.heroesId)
+            if (answer.error === 0) {
+                commit('addHeroTeam', answer.data)
+            } else
+                console.log(answer.data)
+            return answer
+        },
+        async removeHeroFromTeam({commit}, data) {
+            const answer = await TeamService.removeHeroFromTeam(data.id, data.heroesId)
+            if (answer.error === 0) {
+                commit('removeHeroTeam', answer.data)
+            } else
+                console.log(answer.data)
+            return answer
         }
     }
 }

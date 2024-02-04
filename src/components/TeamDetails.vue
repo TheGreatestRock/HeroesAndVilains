@@ -10,6 +10,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    {{ getCurrentTeam }}
   </div>
 </template>
 

@@ -2,7 +2,7 @@
   <div>
     <h2>List of all organisations</h2>
     <v-btn @click="showCreateOrganisation" color="primary">Create new Organisation</v-btn>
-    <v-btn @click="selectOrganisation" color="primary">Modify</v-btn>
+    <v-btn @click="selectOrganisation" color="primary">View</v-btn>
     <v-card
         class="mx-auto"
         max-width="700">
@@ -90,26 +90,28 @@ import {mapActions, mapGetters} from "vuex";
 export default {
   name: 'OrganisationList',
   data: () => ({
+    selectedOrg: '',
     search: '',
     showCreateDialog: false,
     showCreationError: false,
     organisationCreation: {name: '', secret: ''}
   }),
   computed: {
-    ...mapGetters(['getOrganisations', 'getCurrentOrganisation']),
+    ...mapGetters(['getOrganisations']),
     selected: {
       get() {
-        return [this.getCurrentOrganisation]
+        return [this.selectedOrg]
       },
-      set(selectedOrganisations) {
-        this.setCurrentOrganisation(selectedOrganisations[0])
+      set(val) {
+        this.selectedOrg = val[0]
       }
     }
   },
   methods: {
-    ...mapActions(['getOrganisationsData', 'setCurrentOrganisation', 'createOrganisation']),
+    ...mapActions(['getOrganisationsData', 'createOrganisation']),
     selectOrganisation() {
-      this.$router.push({name: 'currentOrganisationDetails'})
+      console.log(this.selectedOrg._id)
+      this.$router.push({name: 'currentOrganisationDetails',  params: { id: this.selectedOrg._id }})
     },
     showCreateOrganisation() {
       this.showCreateDialog = true
@@ -120,6 +122,7 @@ export default {
         this.organisationCreation = {name: '', secret: ''}
         await this.getOrganisationsData()
         this.showCreateDialog = false
+        this.showCreationError = false
       } else {
         console.log(answer)
         this.showCreationError = true

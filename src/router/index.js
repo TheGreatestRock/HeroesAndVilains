@@ -28,7 +28,7 @@ const routes = [
                 }
             },
             {
-                path: '/organisations/current',
+                path: '/organisations/:id',
                 name: 'currentOrganisationDetails',
                 components: {
                     organisationMain: () => import('../components/OrganisationDetails.vue')
