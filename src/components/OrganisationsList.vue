@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>List of all organisations</h2>
-    <v-btn @click="createOrganisation" color="primary">Create new Organisation</v-btn>
+    <v-btn @click="showCreateOrganisation" color="primary">Create new Organisation</v-btn>
     <v-btn @click="selectOrganisation" color="primary">Modify</v-btn>
     <v-card
         class="mx-auto"
@@ -37,7 +37,15 @@
         <v-card-title class="text-h5">Create a new organisation</v-card-title>
         <v-card-text>
           <v-container>
-            <!--            TODO : Rajouter une alert pour l'état de la réponse de l'API -->
+            <v-row>
+              <v-alert
+                  v-model="showCreationError"
+                  color="red"
+                  type="error"
+              >
+                Creation failed
+              </v-alert>
+            </v-row>
             <v-row>
               <v-text-field
                   label="Organisation's name"
@@ -57,7 +65,7 @@
           <v-btn
               color="red darken-1"
               text
-              @click="showCreateDialog = false"
+              @click="showCreateDialog = false; showCreationError = false"
           >
             Cancel
           </v-btn>
@@ -84,6 +92,7 @@ export default {
   data: () => ({
     search: '',
     showCreateDialog: false,
+    showCreationError: false,
     organisationCreation: {name: '', secret: ''}
   }),
   computed: {
@@ -98,15 +107,23 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getOrganisationsData', 'setCurrentOrganisation']),
+    ...mapActions(['getOrganisationsData', 'setCurrentOrganisation', 'createOrganisation']),
     selectOrganisation() {
       this.$router.push({name: 'currentOrganisationDetails'})
     },
-    createOrganisation() {
+    showCreateOrganisation() {
       this.showCreateDialog = true
     },
-    confirmCreate() {
-      console.log(this.organisationCreation)
+    async confirmCreate() {
+      const answer = await this.createOrganisation(this.organisationCreation)
+      if (answer.error === 0) {
+        this.organisationCreation = {name: '', secret: ''}
+        await this.getOrganisationsData()
+        this.showCreateDialog = false
+      } else {
+        console.log(answer)
+        this.showCreationError = true
+      }
     }
   },
   async mounted() {

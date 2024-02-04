@@ -29,14 +29,16 @@ export default {
 
             if (organisations.error === 0) {
                 commit('updateOrganisationsNames', organisations.data)
-            }
-            else
+            } else
                 console.log(organisations.data)
 
             return organisations
         },
         async setCurrentOrganisation({commit}, data) {
             commit('updateCurrentOrganisation', data)
+        },
+        async createOrganisation(context, data) {
+            return await OrganisationsService.createOrganisation(data)
         }
     },
 }

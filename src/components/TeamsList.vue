@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>List of all teams</h2>
-    <v-btn @click="createTeam" color="primary">Create new Team</v-btn>
+    <v-btn @click="showCreateTeam" color="primary">Create new Team</v-btn>
     <v-btn @click="selectTeam" color="primary">Modify</v-btn>
     <v-card
         class="mx-auto"
@@ -37,7 +37,15 @@
         <v-card-title class="text-h5">Create a new team</v-card-title>
         <v-card-text>
           <v-container>
-            <!--            TODO : Rajouter une alert pour l'état de la réponse de l'API -->
+            <v-row>
+              <v-alert
+                  v-model="showCreationError"
+                  color="red"
+                  type="error"
+              >
+                Creation failed
+              </v-alert>
+            </v-row>
             <v-row>
               <v-text-field
                   label="Team's name"
@@ -51,7 +59,7 @@
           <v-btn
               color="red darken-1"
               text
-              @click="showCreateDialog = false"
+              @click="showCreateDialog = false; showCreationError = false"
           >
             Cancel
           </v-btn>
@@ -77,6 +85,7 @@ export default {
   data: () => ({
     search: '',
     showCreateDialog: false,
+    showCreationError: false,
     teamCreation: {name: ''}
   }),
   computed: {
@@ -91,15 +100,23 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getTeamsData', 'setCurrentTeam']),
+    ...mapActions(['getTeamsData', 'setCurrentTeam', 'createTeam']),
     selectTeam() {
       this.$router.push({name: 'currentTeamDetails'})
     },
-    createTeam() {
+    showCreateTeam() {
       this.showCreateDialog = true
     },
-    confirmCreate() {
-      console.log(this.teamCreation)
+    async confirmCreate() {
+      const answer = await this.createTeam(this.teamCreation)
+      if (answer.error === 0) {
+        this.teamCreation = {name: ''}
+        await this.getTeamsData()
+        this.showCreateDialog = false
+      } else {
+        console.log(answer)
+        this.showCreationError = true
+      }
     }
   },
   async mounted() {

@@ -9,6 +9,16 @@ async function getOrganisations() {
     }
 }
 
+async function createOrganisation(organisation) {
+    try {
+        const answer = await axios.post('https://apidemo.iut-bm.univ-fcomte.fr/herocorp/orgs/create', organisation)
+        return answer.data
+    } catch (err) {
+        return {error: 1, status: 404, data: 'unexpected error'}
+    }
+}
+
 export default {
-    getOrganisations
+    getOrganisations,
+    createOrganisation
 }

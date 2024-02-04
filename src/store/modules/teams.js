@@ -24,14 +24,16 @@ export default {
 
             if (teams.error === 0) {
                 commit('updateTeams', teams.data)
-            }
-            else
+            } else
                 console.log(teams.data)
 
             return teams
         },
         async setCurrentTeam({commit}, data) {
             commit('updateCurrentTeam', data)
+        },
+        async createTeam(context, data) {
+            return await TeamService.createTeam(data)
         }
     }
 }
