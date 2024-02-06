@@ -102,8 +102,8 @@ export default {
       get() {
         return [this.selectedOrg]
       },
-      set(val) {
-        this.selectedOrg = val[0]
+      set(selectedOrganisations) {
+        this.$store.commit('updateCurrentOrganisation', (selectedOrganisations[0]))
       }
     }
   },

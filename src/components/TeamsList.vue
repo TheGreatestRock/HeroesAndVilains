@@ -16,14 +16,14 @@
         </template>
       </v-text-field>
       <v-data-table
-        v-model="selected"
-        :headers="[{ text: 'Name', value: 'name' }, { text: 'Number of affiliations', value: 'nbAffiliations' }]"
-        :items="teamList ? teamList : getTeams"
-        :single-select="true"
-        :search="search"
-        item-key="_id"
-        show-select
-        class="elevation-1"
+          v-model="selected"
+          :headers="[{ text: 'Name', value: 'name' }, { text: 'Number of affiliations', value: 'nbAffiliations' }]"
+          :items="teamList ? teamList : getTeams"
+          :single-select="true"
+          :search="search"
+          item-key="_id"
+          show-select
+          class="elevation-1"
       >
       </v-data-table>
     </v-card>
