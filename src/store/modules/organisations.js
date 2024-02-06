@@ -40,8 +40,9 @@ export default {
 
             return organisations
         },
-        async getOrganisationById({commit}, id) {
-            const organisation = await OrganisationsService.getOrganisationById(id, this.getters.getOrganisationsPassword)
+        async getOrganisationById({commit}) {
+            if (!this.getters.getCurrentOrganisation) return
+            const organisation = await OrganisationsService.getOrganisationById(this.getters.getCurrentOrganisation._id, this.getters.getOrganisationsPassword)
             if (organisation.error === 0) {
                 commit('updateCurrentOrganisation', organisation.data[0])
             } else

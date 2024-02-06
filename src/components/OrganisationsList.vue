@@ -2,7 +2,7 @@
   <div>
     <h2>List of all organisations</h2>
     <v-btn @click="showCreateOrganisation" color="primary">Create new Organisation</v-btn>
-    <v-btn @click="selectOrganisation" color="primary">Modify</v-btn>
+    <v-btn @click="selectOrganisation" color="primary">View</v-btn>
     <v-card
         class="mx-auto"
         max-width="700">
@@ -102,12 +102,12 @@ export default {
         return [this.getCurrentOrganisation]
       },
       set(selectedOrganisations) {
-        this.setCurrentOrganisation(selectedOrganisations[0])
+        this.$store.commit('updateCurrentOrganisation', (selectedOrganisations[0]))
       }
     }
   },
   methods: {
-    ...mapActions(['getOrganisationsData', 'setCurrentOrganisation', 'createOrganisation']),
+    ...mapActions(['getOrganisationsData', 'createOrganisation']),
     selectOrganisation() {
       this.$router.push({name: 'currentOrganisationDetails'})
     },
