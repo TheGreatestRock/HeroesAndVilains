@@ -21,6 +21,12 @@ export default {
         },
         updateCurrentOrganisation(state, organisation) {
             state.currentOrganisation = organisation
+        },
+        addCurrentOrganisationTeams(state, teams) {
+            state.currentOrganisation.teams = [...state.currentOrganisation.teams, ...teams]
+        },
+        removeCurrentOrganisationTeams(state, teams) {
+            state.currentOrganisation.teams = state.currentOrganisation.teams.filter(team => !teams.includes(team))
         }
     },
     actions: {
@@ -34,11 +40,41 @@ export default {
 
             return organisations
         },
-        async setCurrentOrganisation({commit}, data) {
-            commit('updateCurrentOrganisation', data)
+        async getOrganisationById({commit}, id) {
+            const organisation = await OrganisationsService.getOrganisationById(id, this.getters.getOrganisationsPassword)
+            if (organisation.error === 0) {
+                commit('updateCurrentOrganisation', organisation.data[0])
+            } else
+                console.log(organisation.data)
+
+            return organisation
         },
-        async createOrganisation(context, data) {
-            return await OrganisationsService.createOrganisation(data)
+        async addTeamToOrganisation({commit}, idTeam) {
+            const organisation = await OrganisationsService.addTeamToOrganisation(this.getters.getCurrentOrganisation.id, idTeam, this.getters.getOrganisationsPassword)
+            if (organisation.error === 0) {
+                commit('addCurrentOrganisationTeams', organisation.data)
+            } else
+                console.log(organisation.data)
+            return organisation
+        },
+        async removeTeamFromOrganisation({commit}, idTeam) {
+            const organisation = await OrganisationsService.removeTeamFromOrganisation(this.getters.getCurrentOrganisation.id, idTeam, this.getters.getOrganisationsPassword)
+            if (organisation.error === 0) {
+                commit('removeCurrentOrganisationTeams', organisation.data)
+            } else
+                console.log(organisation.data)
+            return organisation
+        },
+        async createOrganisation({commit}, organisation) {
+            const newOrganisation = await OrganisationsService.createOrganisation(organisation)
+            if (newOrganisation.error === 0) {
+                commit('updateOrganisationsNames', newOrganisation.data)
+            } else
+                console.log(newOrganisation.data)
+            return newOrganisation
+        },
+        async setOrganisationsPassword({commit}, password) {
+            commit('updateOrganisationsPassword', password)
         }
     },
 }
