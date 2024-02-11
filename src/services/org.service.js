@@ -28,24 +28,23 @@ async function createOrganisation(organisation) {
     }
 }
 
-async function addTeamToOrganisation(orgId, teamId, secret){
+async function addTeamToOrganisation(teamId, secret){
     try {
-        const answer = await axios.post(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/orgs/addteam?org-secret=${secret}`, {
-            idTeam: teamId,
-            idOrg: orgId
+        const answer = await axios.patch(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/orgs/addteam?org-secret=${secret}`, {
+            idTeam: teamId
         });
         return answer.data
     } catch (err) {
+        console.log(err)
         return {error: 1, status: 404, data: 'unexpected error'}
     }
 
 }
 
-async function removeTeamFromOrganisation(orgId, teamId, secret){
+async function removeTeamFromOrganisation(teamId, secret){
     try {
         const answer = await axios.post(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/orgs/removeteam?org-secret=${secret}`, {
-            idTeam: teamId,
-            idOrg: orgId
+            idTeam: teamId
         });
         return answer.data
     } catch (err) {

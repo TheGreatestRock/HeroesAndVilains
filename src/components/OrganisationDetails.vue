@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Organisation details -->
     <v-container v-if="!isVisible">
       <v-row>
         <v-col style="">
@@ -11,12 +12,13 @@
             <p class="text-h6">{{ getCurrentOrganisation.secret }}</p>
             <TeamsList
                 v-if="getCurrentOrganisation.secret"
-                :teamList="getCurrentOrganisation.teams || []"/>
+                :teamList="getCurrentOrganisation.teams"/>
           </div>
         </v-col>
       </v-row>
     </v-container>
 
+    <!-- Error dialog when component shown but no organisation is selected -->
     <v-dialog v-model="isVisible" persistent max-width="300px">
       <v-card>
         <v-card-title class="text-h5">Error</v-card-title>
@@ -28,91 +30,34 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog
-        v-model="showLoginDialog"
-        persistent>
-      <v-card>
-        <v-card-title>Login to organisation {{
-            getCurrentOrganisation ? getCurrentOrganisation.name : ''
-          }}
-        </v-card-title>
-        <v-card-text>
-          <v-alert
-              v-model="showLoginError"
-              color="red"
-              type="error"
-          >
-            Wrong password
-          </v-alert>
-          <v-text-field
-              label="Password"
-              v-model="password"
-          ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn
-              color="red darken-1"
-              text
-              @click="cancelLogin()"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-              style="color: blue;"
-              @click="connect()">
-            Connexion
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- Connection dialog to log in -->
+    <LoginDialog/>
   </div>
 </template>
 
 <script>
-import TeamsList from "@/components/TeamsList";
-import {mapActions, mapGetters} from "vuex";
+import TeamsList from "@/components/TeamsList"
+import LoginDialog from "@/components/LoginDialog.vue";
+import {mapActions, mapGetters} from "vuex"
 
 export default {
   name: "OrganisationDetails",
   components: {
-    TeamsList
+    TeamsList,
+    LoginDialog
   },
-  data: () => ({
-    showLoginError: false,
-    password: '',
-  }),
+  data: () => ({}),
   computed: {
     ...mapGetters(['getCurrentOrganisation', 'getOrganisationsPassword']),
     isVisible() {
       return !this.getCurrentOrganisation
-    },
-    showLoginDialog() {
-      return !this.isVisible && !this.getCurrentOrganisation.secret
     }
   },
   methods: {
     ...mapActions(['setOrganisationsPassword', 'getOrganisationById']),
     alertClosed() {
       this.$router.push({name: 'organisationsList'})
-    },
-    async connect() {
-      await this.setOrganisationsPassword(this.password);
-      const answer = await this.getOrganisationById()
-      console.log(answer)
-      if (answer.error === 0) {
-        this.showLoginError = false
-        this.showLoginError = false
-      } else
-        this.showLoginError = true
-    },
-    cancelLogin() {
-      this.$router.push({name: 'organisationsList'})
     }
-  },
-  mounted() {
-    this.password = ''
-    this.showLoginError = false
   }
 }
 </script>

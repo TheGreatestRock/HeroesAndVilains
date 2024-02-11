@@ -1,17 +1,19 @@
 <template>
-  <div>
+  <div class="ma-10">
     <h2>List of all organisations</h2>
-    <v-btn @click="showCreateOrganisation" color="primary">Create new Organisation</v-btn>
+    <v-btn @click="showCreateOrganisation" color="primary"  class="mr-5">Create new Organisation</v-btn>
     <v-btn @click="selectOrganisation" color="primary">View</v-btn>
     <v-card
         class="mx-auto"
         max-width="700">
+      <v-card-title>Organisations</v-card-title>
       <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="Chercher"
           single-line
           hide-details
+          class="ml-5 mr-5"
       >
         <template v-slot:append-outer>
           <v-icon @click="search=''">mdi-close</v-icon>
@@ -90,17 +92,16 @@ import {mapActions, mapGetters} from "vuex";
 export default {
   name: 'OrganisationList',
   data: () => ({
-    selectedOrg: '',
     search: '',
     showCreateDialog: false,
     showCreationError: false,
     organisationCreation: {name: '', secret: ''}
   }),
   computed: {
-    ...mapGetters(['getOrganisations']),
+    ...mapGetters(['getOrganisations', 'getCurrentOrganisation']),
     selected: {
       get() {
-        return [this.selectedOrg]
+        return [this.getCurrentOrganisation]
       },
       set(selectedOrganisations) {
         this.$store.commit('updateCurrentOrganisation', (selectedOrganisations[0]))
@@ -110,8 +111,7 @@ export default {
   methods: {
     ...mapActions(['getOrganisationsData', 'createOrganisation']),
     selectOrganisation() {
-      console.log(this.selectedOrg._id)
-      this.$router.push({name: 'currentOrganisationDetails',  params: { id: this.selectedOrg._id }})
+      this.$router.push({name: 'currentOrganisationDetails'})
     },
     showCreateOrganisation() {
       this.showCreateDialog = true

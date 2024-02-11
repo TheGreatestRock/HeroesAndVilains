@@ -51,7 +51,8 @@ export default {
             return organisation
         },
         async addTeamToOrganisation({commit}, idTeam) {
-            const organisation = await OrganisationsService.addTeamToOrganisation(this.getters.getCurrentOrganisation.id, idTeam, this.getters.getOrganisationsPassword)
+            console.log(this.getters.getCurrentOrganisation.id, idTeam, this.getters.getOrganisationsPassword)
+            const organisation = await OrganisationsService.addTeamToOrganisation(idTeam, this.getters.getOrganisationsPassword)
             if (organisation.error === 0) {
                 commit('addCurrentOrganisationTeams', organisation.data)
             } else
@@ -59,7 +60,7 @@ export default {
             return organisation
         },
         async removeTeamFromOrganisation({commit}, idTeam) {
-            const organisation = await OrganisationsService.removeTeamFromOrganisation(this.getters.getCurrentOrganisation.id, idTeam, this.getters.getOrganisationsPassword)
+            const organisation = await OrganisationsService.removeTeamFromOrganisation(idTeam, this.getters.getOrganisationsPassword)
             if (organisation.error === 0) {
                 commit('removeCurrentOrganisationTeams', organisation.data)
             } else
