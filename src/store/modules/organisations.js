@@ -51,7 +51,6 @@ export default {
             return organisation
         },
         async addTeamToOrganisation({commit}, idTeam) {
-            console.log(this.getters.getCurrentOrganisation.id, idTeam, this.getters.getOrganisationsPassword)
             const organisation = await OrganisationsService.addTeamToOrganisation(idTeam, this.getters.getOrganisationsPassword)
             if (organisation.error === 0) {
                 commit('addCurrentOrganisationTeams', organisation.data)

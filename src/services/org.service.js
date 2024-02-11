@@ -43,7 +43,7 @@ async function addTeamToOrganisation(teamId, secret){
 
 async function removeTeamFromOrganisation(teamId, secret){
     try {
-        const answer = await axios.post(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/orgs/removeteam?org-secret=${secret}`, {
+        const answer = await axios.patch(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/orgs/removeteam?org-secret=${secret}`, {
             idTeam: teamId
         });
         return answer.data
