@@ -1,7 +1,14 @@
 <template>
   <div class="ma-10">
     <h2>List of all teams</h2>
-    <v-btn v-if="!teamList" @click="showCreateDialog = true;" color="primary" class="mr-5">Create new Team</v-btn>
+    <v-btn @click="showCreateDialog = true;" color="primary" class="mr-5">
+      <span v-if="!teamList">
+        Create new Team
+      </span>
+      <span v-else>
+        Create and add new Team
+      </span>
+    </v-btn>
     <v-btn v-if="teamList" @click="showAdditionDialog = true" color="primary" class="mr-5">Add team</v-btn>
     <v-btn @click="selectTeam" color="primary">View</v-btn>
     <v-card class="mx-auto" max-width="700">
@@ -40,7 +47,14 @@
     <!-- Dialog to create new team -->
     <v-dialog persistent v-model="showCreateDialog">
       <v-card>
-        <v-card-title class="text-h5">Create a new team</v-card-title>
+        <v-card-title class="text-h5">
+          <span v-if="!teamList">
+            Create new Team
+          </span>
+          <span v-else>
+            Create and add new Team
+          </span>
+        </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
@@ -190,8 +204,8 @@ export default {
 
         // If the component is used to display an organisation's teams
         if (this.teamList) {
-          // await this.addTeamToOrganisation(answer._id)
-          // await this.getOrganisationById()
+          await this.addTeamToOrganisation(answer.data._id)
+          await this.getOrganisationById()
         }
       } else {
         console.log(answer);
