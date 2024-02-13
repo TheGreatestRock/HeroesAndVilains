@@ -221,11 +221,11 @@ export default {
         answer = await this.addTeamToOrganisation(team._id)
         if (answer.error !== 0) anErrorOccured = true
       }
+      await this.getOrganisationById()
       if (anErrorOccured)
         this.showAdditionError = true
       else {
         this.teamsToAdd = []
-        await this.getOrganisationById()
         this.showAdditionError = false
         this.showAdditionDialog = false
       }

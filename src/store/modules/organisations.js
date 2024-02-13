@@ -21,12 +21,6 @@ export default {
         },
         updateCurrentOrganisation(state, organisation) {
             state.currentOrganisation = organisation
-        },
-        addCurrentOrganisationTeams(state, teams) {
-            state.currentOrganisation.teams = [...state.currentOrganisation.teams, ...teams]
-        },
-        removeCurrentOrganisationTeams(state, teams) {
-            state.currentOrganisation.teams = state.currentOrganisation.teams.filter(team => !teams.includes(team))
         }
     },
     actions: {
@@ -50,20 +44,18 @@ export default {
 
             return organisation
         },
-        async addTeamToOrganisation({commit}, idTeam) {
+        async addTeamToOrganisation(context, idTeam) {
             const organisation = await OrganisationsService.addTeamToOrganisation(idTeam, this.getters.getOrganisationsPassword)
-            if (organisation.error === 0) {
-                commit('addCurrentOrganisationTeams', organisation.data)
-            } else
+            if (organisation.error !== 0) {
                 console.log(organisation.data)
+            }
             return organisation
         },
-        async removeTeamFromOrganisation({commit}, idTeam) {
+        async removeTeamFromOrganisation(constext, idTeam) {
             const organisation = await OrganisationsService.removeTeamFromOrganisation(idTeam, this.getters.getOrganisationsPassword)
-            if (organisation.error === 0) {
-                commit('removeCurrentOrganisationTeams', organisation.data)
-            } else
+            if (organisation.error !== 0) {
                 console.log(organisation.data)
+            }
             return organisation
         },
         async createOrganisation({commit}, organisation) {
