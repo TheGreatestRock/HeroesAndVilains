@@ -1,5 +1,4 @@
-import OrganisationsService from '../../services/org.service'
-import TeamService from '../../services/team.service'
+import AppService from '../../services/app.service'
 
 export default {
     namespace: true,
@@ -52,7 +51,7 @@ export default {
     },
     actions: {
         async getOrganisationsData({commit}) {
-            const organisations = await OrganisationsService.getOrganisations()
+            const organisations = await AppService.getOrganisations()
 
             if (organisations.error === 0) {
                 commit('updateOrganisationsNames', organisations.data)
@@ -63,7 +62,7 @@ export default {
         },
         async getOrganisationById({commit}) {
             if (!this.getters.getCurrentOrganisation) return
-            const organisation = await OrganisationsService.getOrganisationById(this.getters.getCurrentOrganisation._id, this.getters.getOrganisationsPassword)
+            const organisation = await AppService.getOrganisationById(this.getters.getCurrentOrganisation._id, this.getters.getOrganisationsPassword)
             if (organisation.error === 0) {
                 commit('updateCurrentOrganisation', organisation.data[0])
             } else
@@ -72,21 +71,21 @@ export default {
             return organisation
         },
         async addTeamToOrganisation(context, idTeam) {
-            const organisation = await OrganisationsService.addTeamToOrganisation(idTeam, this.getters.getOrganisationsPassword)
+            const organisation = await AppService.addTeamToOrganisation(idTeam, this.getters.getOrganisationsPassword)
             if (organisation.error !== 0) {
                 console.log(organisation.data)
             }
             return organisation
         },
         async removeTeamFromOrganisation(constext, idTeam) {
-            const organisation = await OrganisationsService.removeTeamFromOrganisation(idTeam, this.getters.getOrganisationsPassword)
+            const organisation = await AppService.removeTeamFromOrganisation(idTeam, this.getters.getOrganisationsPassword)
             if (organisation.error !== 0) {
                 console.log(organisation.data)
             }
             return organisation
         },
         async createOrganisation({commit}, organisation) {
-            const newOrganisation = await OrganisationsService.createOrganisation(organisation)
+            const newOrganisation = await AppService.createOrganisation(organisation)
             if (newOrganisation.error === 0) {
                 commit('updateOrganisationsNames', newOrganisation.data)
             } else
@@ -97,7 +96,7 @@ export default {
             commit('updateOrganisationsPassword', password)
         },
         async getTeamsData({commit}) {
-            const teams = await TeamService.getTeams()
+            const teams = await AppService.getTeams()
 
             if (teams.error === 0) {
                 commit('updateTeams', teams.data)
@@ -110,7 +109,7 @@ export default {
             commit('updateCurrentTeam', data)
         },
         async createTeam({commit}, team) {
-            const answer = await TeamService.createTeam(team)
+            const answer = await AppService.createTeam(team)
             if (answer.error === 0) {
                 commit('updateTeams', [...this.getters.getTeams, answer.data])
             } else
@@ -118,7 +117,7 @@ export default {
             return answer
         },
         async addHeroToTeam({commit}, data) {
-            const answer = await TeamService.addHeroToTeam(data.id, data.heroesId)
+            const answer = await AppService.addHeroToTeam(data.id, data.heroesId)
             if (answer.error === 0) {
                 commit('addHeroTeam', answer.data)
             } else
@@ -126,7 +125,7 @@ export default {
             return answer
         },
         async removeHeroFromTeam({commit}, data) {
-            const answer = await TeamService.removeHeroFromTeam(data.id, data.heroesId)
+            const answer = await AppService.removeHeroFromTeam(data.id, data.heroesId)
             if (answer.error === 0) {
                 commit('removeHeroTeam', answer.data)
             } else
