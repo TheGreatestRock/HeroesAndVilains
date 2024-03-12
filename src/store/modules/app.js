@@ -1,16 +1,21 @@
 import OrganisationsService from '../../services/org.service'
+import TeamService from '../../services/team.service'
 
 export default {
     namespace: true,
     state: () => ({
         organisationsPassword: null,
         organisations: [],
-        currentOrganisation: null
+        currentOrganisation: null,
+        teams: [],
+        currentTeam: null
     }),
     getters: {
         getOrganisationsPassword: state => state.organisationsPassword,
         getOrganisations: state => state.organisations,
-        getCurrentOrganisation: state => state.currentOrganisation
+        getCurrentOrganisation: state => state.currentOrganisation,
+        getTeams: state => state.teams,
+        getCurrentTeam: state => state.currentTeam
     },
     mutations: {
         updateOrganisationsPassword(state, password) {
@@ -21,6 +26,28 @@ export default {
         },
         updateCurrentOrganisation(state, organisation) {
             state.currentOrganisation = organisation
+        },
+        updateTeams(state, teams) {
+            state.teams = teams
+        },
+        updateCurrentTeam(state, team) {
+            state.currentTeam = team
+        },
+        addHeroTeam(state, data) {
+            state.teams = state.teams.map(team => {
+                if (team.id === data.id) {
+                    return data
+                }
+                return team
+            })
+        },
+        removeHeroTeam(state, data) {
+            state.teams = state.teams.map(team => {
+                if (team.id === data.id) {
+                    return data
+                }
+                return team
+            })
         }
     },
     actions: {
@@ -68,6 +95,43 @@ export default {
         },
         async setOrganisationsPassword({commit}, password) {
             commit('updateOrganisationsPassword', password)
+        },
+        async getTeamsData({commit}) {
+            const teams = await TeamService.getTeams()
+
+            if (teams.error === 0) {
+                commit('updateTeams', teams.data)
+            } else
+                console.log(teams.data)
+
+            return teams
+        },
+        async setCurrentTeam({commit}, data) {
+            commit('updateCurrentTeam', data)
+        },
+        async createTeam({commit}, team) {
+            const answer = await TeamService.createTeam(team)
+            if (answer.error === 0) {
+                commit('updateTeams', [...this.getters.getTeams, answer.data])
+            } else
+                console.log(answer.data)
+            return answer
+        },
+        async addHeroToTeam({commit}, data) {
+            const answer = await TeamService.addHeroToTeam(data.id, data.heroesId)
+            if (answer.error === 0) {
+                commit('addHeroTeam', answer.data)
+            } else
+                console.log(answer.data)
+            return answer
+        },
+        async removeHeroFromTeam({commit}, data) {
+            const answer = await TeamService.removeHeroFromTeam(data.id, data.heroesId)
+            if (answer.error === 0) {
+                commit('removeHeroTeam', answer.data)
+            } else
+                console.log(answer.data)
+            return answer
         }
     },
 }
