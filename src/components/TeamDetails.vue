@@ -1,5 +1,25 @@
 <template>
   <div>
+    <!-- Organisation details -->
+    <v-container v-if="!isVisible">
+      <v-row>
+        <v-col style="">
+          name : <br>
+          <p class="text-h4">{{ getCurrentTeam.name }}</p><br>
+
+          <HeroList
+            v-if="getCurrentOrganisation.secret"
+            :hero-list="getCurrentTeam.members"
+          />
+
+        </v-col>
+      </v-row>
+    </v-container>
+
+    {{ getCurrentTeam }}
+
+
+    <!-- Error dialog when component shown but no Team is selected -->
     <v-dialog v-model="isVisible" persistent max-width="300px">
       <v-card>
         <v-card-title class="text-h5">Error</v-card-title>
@@ -10,18 +30,20 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    {{ getCurrentTeam }}
+
   </div>
 </template>
 
 <script>
   import {mapGetters} from "vuex";
+  import HeroList from "@/components/HeroList.vue";
 
   export default {
     name: "TeamDetails",
+    components: {HeroList},
     data: () => ({}),
     computed: {
-      ...mapGetters(['getCurrentTeam']),
+      ...mapGetters(['getCurrentTeam', 'getCurrentOrganisation']),
       isVisible() {
         return !this.getCurrentTeam
       }

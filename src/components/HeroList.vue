@@ -1,16 +1,22 @@
 <template>
   <div class="ma-10">
-    <h2>List of all teams</h2>
+
+
+    <h2>List of all heroes</h2>
+
+<!-- Buttons -->
     <v-btn @click="showCreateDialog = true;" color="primary" class="mr-5">
-      <span v-if="!teamList">
-        Create new Team
+      <span v-if="!heroList">
+        Create new hero
       </span>
       <span v-else>
-        Create and add new Team
+        Create and add new hero
       </span>
     </v-btn>
-    <v-btn v-if="teamList" @click="showAdditionDialog = true" color="primary" class="mr-5">Add team</v-btn>
-    <v-btn @click="selectTeam" color="primary">View</v-btn>
+    <v-btn v-if="heroList" @click="showAdditionDialog = true" color="primary" class="mr-5">Add hero</v-btn>
+    <v-btn @click="selectHero" color="primary">View</v-btn>
+
+<!-- List -->
     <v-card class="mx-auto" max-width="700">
       <v-text-field
           v-model="search"
@@ -26,7 +32,7 @@
       <v-data-table
           v-model="selected"
           :headers="headers"
-          :items="teamList ? teamList : getTeams"
+          :items="heroList ? heroList : []"
           :single-select="true"
           :search="search"
           item-key="_id"
@@ -44,15 +50,16 @@
       </v-data-table>
     </v-card>
 
-    <!-- Dialog to create new team -->
+<!--    TODO -->
+    <!-- Dialog to create new hero -->
     <v-dialog persistent v-model="showCreateDialog">
       <v-card>
         <v-card-title class="text-h5">
-          <span v-if="!teamList">
-            Create new Team
+          <span v-if="!heroList">
+            Create new Hero
           </span>
           <span v-else>
-            Create and add new Team
+            Create and add new Hero
           </span>
         </v-card-title>
         <v-card-text>
@@ -63,7 +70,7 @@
               </v-alert>
             </v-row>
             <v-row>
-              <v-text-field label="Team's name" v-model="teamCreation.name"/>
+              <v-text-field label="Hero's name" v-model="teamCreation.name"/>
             </v-row>
           </v-container>
         </v-card-text>
@@ -83,6 +90,7 @@
       </v-card>
     </v-dialog>
 
+<!--    TODO -->
     <!-- Dialog to add an existing team to the organisation -->
     <v-dialog persistent v-model="showAdditionDialog">
       <v-card>
@@ -93,7 +101,7 @@
           <v-combobox
               v-model="teamsToAdd"
               multiple
-              :items="addableTeam"
+              :items="addableHero"
               item-text="name"
               label="Select teams"
           ></v-combobox>
@@ -113,11 +121,12 @@
       </v-card>
     </v-dialog>
 
+<!--    TODO -->
     <!-- Dialog to confirm team deletion from organisation -->
     <v-dialog persistent v-model="showDeletionDialog">
       <v-card>
         <v-card-title>
-          Team deletion from organisation {{ getCurrentOrganisation.name || "" }}
+          Hero deletion from organisation {{ getCurrentOrganisation.name || "" }}
         </v-card-title>
         <v-card-text>
           <v-alert
@@ -150,9 +159,9 @@
 import {mapActions, mapGetters} from "vuex";
 
 export default {
-  name: "TeamList",
+  name: "HeroList",
   props: {
-    teamList: {
+    heroList: {
       type: Array,
       default: null,
     },
@@ -172,8 +181,8 @@ export default {
   computed: {
     ...mapGetters(["getTeams", "getCurrentTeam", "getCurrentOrganisation"]),
     headers() {
-      let headers = [{text: 'Name', value: 'name'}, {text: 'Number of affiliations', value: 'nbAffiliations'}]
-      if (this.teamList)
+      let headers = [{text: 'Public Name', value: 'publicName'}, {text: 'Real Name', value: 'realName'}]
+      if (this.heroList)
         headers.push({text: 'Actions', value: 'actions', sortable: false})
       return headers
     },
@@ -185,14 +194,14 @@ export default {
         this.setCurrentTeam(selectedTeams[0]);
       },
     },
-    addableTeam() {
+    addableHero() {
       return this.getTeams.filter(teamA => !this.getCurrentOrganisation.teams.some(teamB => teamA._id === teamB._id))
     }
   },
   methods: {
     ...mapActions(["getTeamsData", "setCurrentTeam", "createTeam", "getOrganisationById", "addTeamToOrganisation", "removeTeamFromOrganisation"]),
     selectTeam() {
-      this.$router.push({name: "currentTeamDetails"});
+      // TODO Add popup
     },
     async confirmCreate() {
       const answer = await this.createTeam(this.teamCreation);
@@ -203,7 +212,7 @@ export default {
         this.showCreationError = false;
 
         // If the component is used to display an organisation's teams
-        if (this.teamList) {
+        if (this.heroList) {
           await this.addTeamToOrganisation(answer.data._id)
           await this.getOrganisationById()
         }

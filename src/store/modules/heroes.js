@@ -16,5 +16,7 @@ export default {
             state.currentHero = hero
         }
     },
-    actions: {},
+    actions: {
+    //     TODO
+    },
 }
