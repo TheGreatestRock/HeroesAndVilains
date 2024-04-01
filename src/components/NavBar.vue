@@ -37,9 +37,6 @@
           { name: 'Organisations', path: '/organisations', icon: 'mdi-domain', children: [
 
           ]},
-          { name: 'Teams', path: '/teams', icon: 'mdi-account-group', children: [
-
-          ]},
         ],
       };
     },
