@@ -142,12 +142,13 @@ async function removeHeroFromTeam(teamId, heroesId, secret){
                 'org-secret': secret
             }
         };
-        const answer = await axios.post(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/teams/removeheroes`, {
-            idHeroes: heroesId, 
+        const answer = await axios.patch(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/teams/removeheroes`, {
+            idHeroes: heroesId,
             idTeam: teamId
         }, config);
         return answer.data;
     } catch (err) {
+        console.log(err)
         return {error: 1, status: 404, data: 'unexpected error'};
     }
 }

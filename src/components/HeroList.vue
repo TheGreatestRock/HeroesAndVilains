@@ -32,7 +32,7 @@
       <v-data-table
           v-model="selected"
           :headers="headers"
-          :items="heroList ? heroList : []"
+          :items="members"
           :single-select="true"
           :search="search"
           item-key="_id"
@@ -122,7 +122,6 @@
       </v-card>
     </v-dialog>
 
-<!--    TODO -->
     <!-- Dialog to confirm team deletion from organisation -->
     <v-dialog persistent v-model="showDeletionDialog">
       <v-card>
@@ -180,7 +179,7 @@ export default {
     teamsToAdd: []
   }),
   computed: {
-    ...mapGetters(["getHeroes", "getCurrentTeam", "getCurrentOrganisation"]),
+    ...mapGetters(["getHeroes", "getCurrentHero", "getCurrentTeam", "getCurrentOrganisation"]),
     headers() {
       let headers = [{text: 'Public Name', value: 'publicName'}, {text: 'Real Name', value: 'realName'}]
       if (this.heroList)
@@ -189,18 +188,21 @@ export default {
     },
     selected: {
       get() {
-        return [];
+        return this.getCurrentHero;
       },
-      set() {
-        // this.setCurrentTeam(selectedHeroes[0]);
+      set(selectedHeroes) {
+        this.setCurrentHero(selectedHeroes[0]);
       },
     },
     addableHero() {
       return this.getHeroes
+    },
+    members() {
+      return this.getCurrentTeam.members
     }
   },
   methods: {
-    ...mapActions(["getHeroesData", "setCurrentTeam", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam"]),
+    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam"]),
     selectHero() {
       // TODO Add popup
     },
@@ -222,12 +224,12 @@ export default {
         this.showCreationError = true;
       }
     },
-    delectionAction(team) {
-      this.heroToDelete = team
+    delectionAction(hero) {
+      this.heroToDelete = hero
       this.showDeletionDialog = true
     },
     async confirmDeletion() {
-      const answer = await this.removeHeroFromTeam(this.heroToDelete._id)
+      const answer = await this.removeHeroFromTeam(this.heroToDelete)
       if (answer.error === 0) {
         this.heroToDelete = {}
         // await this.getOrganisationById()

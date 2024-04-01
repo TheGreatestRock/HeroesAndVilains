@@ -8,7 +8,8 @@ export default {
         currentOrganisation: null,
         teams: [],
         currentTeam: null,
-        heroes: []
+        heroes: [],
+        currentHero: null
     }),
     getters: {
         getOrganisationsPassword: state => state.organisationsPassword,
@@ -17,6 +18,7 @@ export default {
         getTeams: state => state.teams,
         getCurrentTeam: state => state.currentTeam,
         getHeroes: state => state.heroes,
+        getCurrentHero: state => state.currentHero,
         isAuthentified: state => state.organisationsPassword && state.currentOrganisation
     },
     mutations: {
@@ -51,8 +53,14 @@ export default {
                 return team
             })
         },
+        removeHeroCurrentTeam(state, data) {
+            state.currentTeam.members = state.currentTeam.members.filter(member => member._id !== data._id)
+        },
         updateHeroes(state, data) {
             state.heroes = data
+        },
+        updateCurrentHero(state, data) {
+            state.currentHero = data
         }
     },
     actions: {
@@ -145,9 +153,10 @@ export default {
             return answer
         },
         async removeHeroFromTeam({commit}, data) {
-            const answer = await AppService.removeHeroFromTeam(this.getters.getCurrentTeam_id, data)
+            const answer = await AppService.removeHeroFromTeam(this.getters.getCurrentTeam._id, [data._id], this.getters.getOrganisationsPassword)
             if (answer.error === 0) {
                 commit('removeHeroTeam', answer.data)
+                commit('removeHeroCurrentTeam', data)
             } else
                 console.log(answer.data)
             return answer
@@ -172,6 +181,9 @@ export default {
                 commit('updateHeroes', answer.data)
             else
                 console.log(answer)
-        }
+        },
+         async setCurrentHero({commit}, data){
+            commit('updateCurrentHero', data)
+         }
     },
 }
