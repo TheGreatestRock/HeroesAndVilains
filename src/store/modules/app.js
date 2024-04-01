@@ -145,6 +145,7 @@ export default {
             return answer
         },
         async addHeroToTeam({commit}, data) {
+            // TODO update currentTeam pour afficher au front
             const answer = await AppService.addHeroToTeam(this.getters.getCurrentTeam._id, data)
             if (answer.error === 0) {
                 commit('addHeroTeam', answer.data)

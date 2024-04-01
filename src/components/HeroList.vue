@@ -4,7 +4,7 @@
 
     <h2>List of all heroes</h2>
 
-<!-- Buttons -->
+    <!-- Buttons -->
     <v-btn @click="showCreateDialog = true;" color="primary" class="mr-5">
       <span v-if="!heroList">
         Create new hero
@@ -16,7 +16,7 @@
     <v-btn v-if="heroList" @click="showAdditionDialog = true" color="primary" class="mr-5">Add hero</v-btn>
     <v-btn @click="selectHero" color="primary">View</v-btn>
 
-<!-- List -->
+    <!-- List -->
     <v-card class="mx-auto" max-width="700">
       <v-text-field
           v-model="search"
@@ -49,6 +49,8 @@
         </template>
       </v-data-table>
     </v-card>
+
+    {{ addableHero }}
 
     <!-- Dialog to create new hero -->
     <v-dialog persistent v-model="showCreateDialog">
@@ -100,11 +102,11 @@
         </v-card-title>
         <v-card-text>
           <v-combobox
-              v-model="teamsToAdd"
+              v-model="heroesToAdd"
               multiple
               :items="addableHero"
-              item-text="name"
-              label="Select teams"
+              item-text="publicName"
+              label="Select hero"
           ></v-combobox>
         </v-card-text>
         <v-card-actions>
@@ -176,7 +178,7 @@ export default {
     showAdditionError: false,
     heroCreation: {realName: "", publicName: ""},
     heroToDelete: {},
-    teamsToAdd: []
+    heroesToAdd: []
   }),
   computed: {
     ...mapGetters(["getHeroes", "getCurrentHero", "getCurrentTeam", "getCurrentOrganisation"]),
@@ -202,7 +204,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam"]),
+    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam", "addHeroToTeam"]),
     selectHero() {
       // TODO Add popup
     },
@@ -240,18 +242,17 @@ export default {
         this.showDeletionError = true
       }
     },
+    // TODO
     async confirmAddition() {
-      let anErrorOccured = false
+      let anErrorOccurred = false
       let answer = null
-      for (let team of this.teamsToAdd) {
-        answer = await this.addTeamToOrganisation(team._id)
-        if (answer.error !== 0) anErrorOccured = true
-      }
+      answer = await this.addHeroToTeam(this.heroesToAdd.map(hero => hero._id))
+      if (answer.error !== 0) anErrorOccurred = true
       await this.getOrganisationById()
-      if (anErrorOccured)
+      if (anErrorOccurred)
         this.showAdditionError = true
       else {
-        this.teamsToAdd = []
+        this.heroesToAdd = []
         this.showAdditionError = false
         this.showAdditionDialog = false
       }

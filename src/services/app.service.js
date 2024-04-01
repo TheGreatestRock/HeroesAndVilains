@@ -125,7 +125,7 @@ async function addHeroToTeam(teamId, heroesId, secret){
                 'org-secret': secret
             }
         };
-        const answer = await axios.post(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/teams/addheroes`, {
+        const answer = await axios.patch(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/teams/addheroes`, {
             idHeroes: heroesId, 
             idTeam: teamId
         }, config);
@@ -167,13 +167,14 @@ async function createHero(hero){
         const answer = await axios.post('https://apidemo.iut-bm.univ-fcomte.fr/herocorp/heroes/create', hero)
         return answer.data
     } catch (e) {
+        console.log(e)
         return {error: 1, status: 404, data: 'unexpected error'}
     }
 }
 
 async function getHeroes() {
     try {
-        const answer = await axios.post('https://apidemo.iut-bm.univ-fcomte.fr/herocorp/heroes/getaliases')
+        const answer = await axios.get('https://apidemo.iut-bm.univ-fcomte.fr/herocorp/heroes/getaliases')
         return answer.data
     } catch (e) {
         return {error: 1, status: 404, data: 'unexpected error'}
