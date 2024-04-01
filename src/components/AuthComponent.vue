@@ -1,31 +1,47 @@
 <template>
   <div>
-    <v-text-field
-        label="Password"
-        v-model="password"
-    ></v-text-field>
-    <v-btn style="color: blue;" @click="connect()">Connexion</v-btn>
+    <h1>Connexion</h1>
+    <form @submit.prevent="gologin">
+      <label for="login">Identifiant :</label>
+      <input type="text" id="login" v-model="login" required>
+      <br>
+      <label for="password">Mot de passe :</label>
+      <input type="password" id="password" v-model="password" required>
+      <br>
+      <button type="submit">Connexion</button>
+    </form>
+    <p v-if="error">{{ error }}</p>
   </div>
 </template>
 
+
 <script>
-import {mapActions, mapGetters} from "vuex";
+import { mapActions } from 'vuex';
 
 export default {
   data() {
     return {
-      password: (this.getOrganisationsPassword) ? this.getOrganisationsPassword : '',
+      login: '',
+      password: '',
+      error: '',
     };
   },
-  computed: {
-    ...mapGetters(['getOrganisationsPassword']),
-  },
   methods: {
-    ...mapActions(['setOrganisationsPassword']),
-    connect() {
-      this.setOrganisationsPassword(this.password);
-      this.$router.push({name: 'home'});
-    }
+    ...mapActions('auth', {
+      performLogin: 'login',
+      getUser: 'getUser'
+    }),
+    async gologin() {
+      try {
+        await this.performLogin({ login: this.login, password: this.password });
+        console.log(await this.getUser(this.login));
+        this.$router.push('/');
+      } catch (error) {
+        this.error = error.message;
+      }
+    },
   },
 };
+
+
 </script>
