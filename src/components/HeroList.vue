@@ -189,10 +189,10 @@ export default {
     },
     selected: {
       get() {
-        return [this.getCurrentTeam];
+        return [];
       },
-      set(selectedTeams) {
-        this.setCurrentTeam(selectedTeams[0]);
+      set() {
+        // this.setCurrentTeam(selectedHeroes[0]);
       },
     },
     addableHero() {
