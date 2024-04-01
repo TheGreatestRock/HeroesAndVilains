@@ -14,7 +14,13 @@ export default {
         getOrganisations: state => state.organisations,
         getCurrentOrganisation: state => state.currentOrganisation,
         getTeams: state => state.teams,
-        getCurrentTeam: state => state.currentTeam
+        getCurrentTeam: state => state.currentTeam,
+        isAuthentified: state => state.organisationsPassword && state.currentOrganisation
+
+
+
+
+
     },
     mutations: {
         updateOrganisationsPassword(state, password) {
