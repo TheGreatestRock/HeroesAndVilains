@@ -7,14 +7,16 @@ export default {
         organisations: [],
         currentOrganisation: null,
         teams: [],
-        currentTeam: null
+        currentTeam: null,
+        heroes: []
     }),
     getters: {
         getOrganisationsPassword: state => state.organisationsPassword,
         getOrganisations: state => state.organisations,
         getCurrentOrganisation: state => state.currentOrganisation,
         getTeams: state => state.teams,
-        getCurrentTeam: state => state.currentTeam
+        getCurrentTeam: state => state.currentTeam,
+        getHeroes: state => state.heroes
     },
     mutations: {
         updateOrganisationsPassword(state, password) {
@@ -47,6 +49,9 @@ export default {
                 }
                 return team
             })
+        },
+        updateHeroes(state, data) {
+            state.heroes = data
         }
     },
     actions: {
@@ -77,7 +82,7 @@ export default {
             }
             return organisation
         },
-        async removeTeamFromOrganisation(constext, idTeam) {
+        async removeTeamFromOrganisation(context, idTeam) {
             const organisation = await AppService.removeTeamFromOrganisation(idTeam, this.getters.getOrganisationsPassword)
             if (organisation.error !== 0) {
                 console.log(organisation.data)
@@ -106,6 +111,20 @@ export default {
             return teams
         },
         async setCurrentTeam({commit}, data) {
+            if (!data) {
+                commit('updateCurrentTeam', null)
+                return
+            }
+            console.log(data)
+            const teamMembers = []
+            for (const memberId of data.members) {
+                const res = await AppService.getHeroById(memberId, this.getters.getOrganisationsPassword)
+                if (res.error === 0)
+                    teamMembers.push(res.data[0])
+                else
+                    console.log(res)
+            }
+            data.members = teamMembers
             commit('updateCurrentTeam', data)
         },
         async createTeam({commit}, team) {
@@ -117,7 +136,7 @@ export default {
             return answer
         },
         async addHeroToTeam({commit}, data) {
-            const answer = await AppService.addHeroToTeam(data.id, data.heroesId)
+            const answer = await AppService.addHeroToTeam(this.getters.getCurrentTeam._id, data)
             if (answer.error === 0) {
                 commit('addHeroTeam', answer.data)
             } else
@@ -125,12 +144,33 @@ export default {
             return answer
         },
         async removeHeroFromTeam({commit}, data) {
-            const answer = await AppService.removeHeroFromTeam(data.id, data.heroesId)
+            const answer = await AppService.removeHeroFromTeam(this.getters.getCurrentTeam_id, data)
             if (answer.error === 0) {
                 commit('removeHeroTeam', answer.data)
             } else
                 console.log(answer.data)
             return answer
+        },
+        async getTeamById({commit}){
+            if (!this.getters.getCurrentTeam) return
+            const teamMembers = await AppService.getTeamMembers(this.getters.getCurrentTeam._id)
+            if (teamMembers.error === 0) {
+                commit('updateCurrentOrganisation', teamMembers.data[0])
+            } else
+                console.log(teamMembers.data)
+
+            return teamMembers
+        },
+        async createHero(context, hero) {
+            const answer = await AppService.createHero(hero)
+            return answer
+        },
+        async getHeroesData({commit}) {
+            const answer = await AppService.getHeroes()
+            if (answer.error === 0)
+                commit('updateHeroes', answer.data)
+            else
+                console.log(answer)
         }
     },
 }

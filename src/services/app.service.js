@@ -105,6 +105,32 @@ async function removeHeroFromTeam(teamId, heroesId){
     }
 }
 
+async function getHeroById(heroId, orgSecret) {
+    try {
+        const answer = await axios.get('https://apidemo.iut-bm.univ-fcomte.fr/herocorp/heroes/getbyid/' + heroId + '?org-secret=' + orgSecret)
+        return answer.data
+    } catch (e) {
+        return {error: 1, status: 404, data: 'unexpected error'}
+    }
+}
+
+async function createHero(hero){
+    try {
+        const answer = await axios.post('https://apidemo.iut-bm.univ-fcomte.fr/herocorp/heroes/create', hero)
+        return answer.data
+    } catch (e) {
+        return {error: 1, status: 404, data: 'unexpected error'}
+    }
+}
+
+async function getHeroes() {
+    try {
+        const answer = await axios.post('https://apidemo.iut-bm.univ-fcomte.fr/herocorp/heroes/getaliases')
+        return answer.data
+    } catch (e) {
+        return {error: 1, status: 404, data: 'unexpected error'}
+    }
+}
 
 export default {
     getOrganisations,
@@ -116,5 +142,8 @@ export default {
     createTeam,
     getTeamMembers,
     addHeroToTeam,
-    removeHeroFromTeam
+    removeHeroFromTeam,
+    getHeroById,
+    createHero,
+    getHeroes
 }
