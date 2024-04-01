@@ -29,10 +29,12 @@ export default {
   methods: {
     ...mapActions('auth', {
       performLogin: 'login',
+      getUser: 'getUser'
     }),
     async gologin() {
       try {
         await this.performLogin({ login: this.login, password: this.password });
+        console.log(await this.getUser(this.login));
         this.$router.push('/');
       } catch (error) {
         this.error = error.message;

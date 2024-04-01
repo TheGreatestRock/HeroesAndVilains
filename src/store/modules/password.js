@@ -35,12 +35,17 @@ const mutations = {
 const actions = {
   async login({ commit }, credentials) {
     const response = await AuthService.login(credentials);
-    commit('SET_XSRF_TOKEN', response.headers['x-xsrf-token']);
+    console.log(response);
+    commit('SET_XSRF_TOKEN', response.data.data.xsrfToken);
     commit('SET_JWT', response.data.jwt);
   },
   async logout({ commit }) {
     commit('LOGOUT');
   },
+  async getUser({ commit }, login) {
+    const response = await AuthService.getUser(login);
+    commit('SET_LOGIN', response.data.login);
+  }
 };
 
 export default {
