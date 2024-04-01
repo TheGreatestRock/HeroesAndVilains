@@ -50,7 +50,6 @@
       </v-data-table>
     </v-card>
 
-<!--    TODO -->
     <!-- Dialog to create new hero -->
     <v-dialog persistent v-model="showCreateDialog">
       <v-card>
@@ -70,7 +69,10 @@
               </v-alert>
             </v-row>
             <v-row>
-              <v-text-field label="Hero's name" v-model="teamCreation.name"/>
+              <v-text-field label="Hero's real name" v-model="heroCreation.realName"/>
+            </v-row>
+            <v-row>
+              <v-text-field label="Hero's public name" v-model="heroCreation.publicName"/>
             </v-row>
           </v-container>
         </v-card-text>
@@ -90,7 +92,6 @@
       </v-card>
     </v-dialog>
 
-<!--    TODO -->
     <!-- Dialog to add an existing team to the organisation -->
     <v-dialog persistent v-model="showAdditionDialog">
       <v-card>
@@ -126,7 +127,7 @@
     <v-dialog persistent v-model="showDeletionDialog">
       <v-card>
         <v-card-title>
-          Hero deletion from organisation {{ getCurrentOrganisation.name || "" }}
+          Hero deletion from organisation {{ getCurrentTeam.name || "" }}
         </v-card-title>
         <v-card-text>
           <v-alert
@@ -136,7 +137,7 @@
           >
             Deletion failed
           </v-alert>
-          Are you sure you want to delete this team from your organisation ?
+          Are you sure you want to delete this hero from your team ?
         </v-card-text>
         <v-card-actions>
           <v-btn
@@ -174,12 +175,12 @@ export default {
     showDeletionError: false,
     showAdditionDialog: false,
     showAdditionError: false,
-    teamCreation: {name: ""},
-    teamToDelete: {},
+    heroCreation: {realName: "", publicName: ""},
+    heroToDelete: {},
     teamsToAdd: []
   }),
   computed: {
-    ...mapGetters(["getTeams", "getCurrentTeam", "getCurrentOrganisation"]),
+    ...mapGetters(["getHeroes", "getCurrentTeam", "getCurrentOrganisation"]),
     headers() {
       let headers = [{text: 'Public Name', value: 'publicName'}, {text: 'Real Name', value: 'realName'}]
       if (this.heroList)
@@ -188,33 +189,33 @@ export default {
     },
     selected: {
       get() {
-        return [this.getCurrentTeam];
+        return [];
       },
-      set(selectedTeams) {
-        this.setCurrentTeam(selectedTeams[0]);
+      set() {
+        // this.setCurrentTeam(selectedHeroes[0]);
       },
     },
     addableHero() {
-      return this.getTeams.filter(teamA => !this.getCurrentOrganisation.teams.some(teamB => teamA._id === teamB._id))
+      return this.getHeroes
     }
   },
   methods: {
-    ...mapActions(["getTeamsData", "setCurrentTeam", "createTeam", "getOrganisationById", "addTeamToOrganisation", "removeTeamFromOrganisation"]),
-    selectTeam() {
+    ...mapActions(["getHeroesData", "setCurrentTeam", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam"]),
+    selectHero() {
       // TODO Add popup
     },
     async confirmCreate() {
-      const answer = await this.createTeam(this.teamCreation);
+      const answer = await this.createHero(this.heroCreation);
       if (answer.error === 0) {
-        this.teamCreation = {name: ""};
-        await this.getTeamsData();
+        this.heroCreation = {realName: "", publicName: ""};
+        // await this.getTeamsData();
         this.showCreateDialog = false;
         this.showCreationError = false;
 
         // If the component is used to display an organisation's teams
         if (this.heroList) {
-          await this.addTeamToOrganisation(answer.data._id)
-          await this.getOrganisationById()
+          await this.addHeroToTeam(answer.data._id)
+          // await this.getOrganisationById()
         }
       } else {
         console.log(answer);
@@ -222,14 +223,14 @@ export default {
       }
     },
     delectionAction(team) {
-      this.teamToDelete = team
+      this.heroToDelete = team
       this.showDeletionDialog = true
     },
     async confirmDeletion() {
-      const answer = await this.removeTeamFromOrganisation(this.teamToDelete._id)
+      const answer = await this.removeHeroFromTeam(this.heroToDelete._id)
       if (answer.error === 0) {
-        this.teamToDelete = {}
-        await this.getOrganisationById()
+        this.heroToDelete = {}
+        // await this.getOrganisationById()
         this.showDeletionDialog = false
         this.showDeletionError = false
       } else {
@@ -255,7 +256,7 @@ export default {
     }
   },
   async mounted() {
-    await this.getTeamsData();
+    await this.getHeroesData();
   },
 
 };

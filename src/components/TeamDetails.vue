@@ -16,9 +16,6 @@
       </v-row>
     </v-container>
 
-    {{ getCurrentTeam }}
-
-
     <!-- Error dialog when component shown but no Team is selected -->
     <v-dialog v-model="isVisible" persistent max-width="300px">
       <v-card>
