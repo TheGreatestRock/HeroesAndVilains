@@ -5,13 +5,17 @@
 </template>
 
 <script>
-import authComponent from "../components/AuthComponent.vue"
+import { mapActions } from 'vuex';
+
 export default {
-    name: "AuthentificationView",
+    name: 'AuthenticationView',
     components: {
-        authComponent
-    }
-}
+        authComponent: () => import('@/components/AuthComponent.vue'),
+    },
+    methods: {
+        ...mapActions(['login']),
+    },
+};
 </script>
 
 <style>
