@@ -1,8 +1,8 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-//import store from '../store';
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import app from '../store/modules/app'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes = [
   {
@@ -36,7 +36,7 @@ const routes = [
         components: {
           organisationMain: () => import('../components/OrganisationDetails.vue'),
         },
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
     ],
   },
@@ -72,17 +72,23 @@ const routes = [
     path: '*',
     redirect: '/',
   },
-  
-];
-
+]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some((route) => route.meta.requiresAuth);
+  const isAuthenticated = app.getters.isAuthenticated;
+
+  if (requiresAuth && !isAuthenticated) {
+    router.push('/').catch(() => {});
+  } else {
+    next();
+  }
 });
 
-
-
-
-export default router;
+export default router

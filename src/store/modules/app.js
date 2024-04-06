@@ -1,4 +1,4 @@
-import AppService from '../../services/app.service'
+import AppService from '../../services/app.service';
 
 export default {
     namespace: true,
@@ -19,7 +19,7 @@ export default {
         getCurrentTeam: state => state.currentTeam,
         getHeroes: state => state.heroes,
         getCurrentHero: state => state.currentHero,
-        isAuthentified: state => state.organisationsPassword && state.currentOrganisation
+        isAuthenticated: state => !!state.organisationsPassword && !!state.currentOrganisation
     },
     mutations: {
         updateOrganisationsPassword(state, password) {
@@ -121,21 +121,21 @@ export default {
         },
         async setCurrentTeam({commit}, data) {
             if (!data) {
-                commit('updateCurrentTeam', null)
-                return
+              commit('updateCurrentTeam', null)
+              return
             }
             console.log(data)
-            const teamMembers = []
-            for (const memberId of data.members) {
-                const res = await AppService.getHeroById(memberId, this.getters.getOrganisationsPassword)
-                if (res.error === 0)
-                    teamMembers.push(res.data[0])
-                else
-                    console.log(res)
-            }
-            data.members = teamMembers
+            const teamMembers = await Promise.all(data.members.map(async memberId => {
+              const res = await AppService.getHeroById(memberId, this.getters.getOrganisationsPassword)
+              if (res.error === 0)
+                return res.data[0]
+              else
+                console.log(res)
+            }));
+            console.log('teamMembers:', teamMembers);
+            data.members = teamMembers.filter(Boolean);
             commit('updateCurrentTeam', data)
-        },
+          },
         async createTeam({commit}, team) {
             const answer = await AppService.createTeam(team)
             if (answer.error === 0) {
@@ -145,10 +145,10 @@ export default {
             return answer
         },
         async addHeroToTeam({commit}, data) {
-            // TODO update currentTeam pour afficher au front
             const answer = await AppService.addHeroToTeam(this.getters.getCurrentTeam._id, data)
             if (answer.error === 0) {
                 commit('addHeroTeam', answer.data)
+                commit('addMemberToCurrentTeam', data);
             } else
                 console.log(answer.data)
             return answer

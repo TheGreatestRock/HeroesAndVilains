@@ -1,7 +1,5 @@
 <template>
   <div class="ma-10">
-
-
     <h2>List of all heroes</h2>
 
     <!-- Buttons -->
@@ -13,7 +11,7 @@
         Create and add new hero
       </span>
     </v-btn>
-    <v-btn v-if="heroList" @click="showAdditionDialog = true" color="primary" class="mr-5">Add hero</v-btn>
+    <v-btn v-if="heroList && addableHero.length > 0" @click="showAdditionDialog = true" color="primary" class="mr-5">Add hero</v-btn>
     <v-btn @click="selectHero" color="primary">View</v-btn>
 
     <!-- List -->
@@ -21,7 +19,7 @@
       <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
-          label="Chercher"
+          label="Search"
           single-line
           hide-details
       >
@@ -33,8 +31,6 @@
           v-model="selected"
           :headers="headers"
           :items="members"
-          :single-select="true"
-          :search="search"
           item-key="_id"
           show-select
           class="elevation-1"
@@ -42,15 +38,13 @@
         <template slot="item.actions" slot-scope="{ item }">
           <v-icon
               small
-              @click="delectionAction(item)"
+              @click="deletionAction(item)"
           >
             mdi-delete
           </v-icon>
         </template>
       </v-data-table>
     </v-card>
-
-    {{ addableHero }}
 
     <!-- Dialog to create new hero -->
     <v-dialog persistent v-model="showCreateDialog">
@@ -190,36 +184,34 @@ export default {
     },
     selected: {
       get() {
-        return this.getCurrentHero;
+        return this.getCurrentHero ? [this.getCurrentHero] : [];
       },
       set(selectedHeroes) {
         this.setCurrentHero(selectedHeroes[0]);
       },
     },
     addableHero() {
-      return this.getHeroes
+      return this.getHeroes.filter(hero => !this.getCurrentTeam.members.some(member => member._id === hero._id));
     },
     members() {
-      return this.getCurrentTeam.members
+      return this.getCurrentTeam.members || [];
     }
   },
   methods: {
-    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam", "addHeroToTeam"]),
+    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam", "setCurrentTeam"]),
     selectHero() {
       // TODO Add popup
     },
     async confirmCreate() {
       const answer = await this.createHero(this.heroCreation);
       if (answer.error === 0) {
-        this.heroCreation = {realName: "", publicName: ""};
-        // await this.getTeamsData();
+        this.heroCreation = { realName: "", publicName: "" };
         this.showCreateDialog = false;
         this.showCreationError = false;
 
-        // If the component is used to display an organisation's teams
         if (this.heroList) {
-          await this.addHeroToTeam(answer.data._id)
-          // await this.getOrganisationById()
+          const updatedTeam = await this.addHeroToTeam(answer.data._id);
+          this.setCurrentTeam(updatedTeam);
         }
       } else {
         console.log(answer);
@@ -231,10 +223,11 @@ export default {
       this.showDeletionDialog = true
     },
     async confirmDeletion() {
-      const answer = await this.removeHeroFromTeam(this.heroToDelete)
+      const answer = await this.removeHeroFromTeam(this.heroToDelete._id)
       if (answer.error === 0) {
         this.heroToDelete = {}
-        // await this.getOrganisationById()
+        const updatedTeam = await this.getOrganisationById()
+        this.setCurrentTeam(updatedTeam);
         this.showDeletionDialog = false
         this.showDeletionError = false
       } else {
@@ -242,13 +235,18 @@ export default {
         this.showDeletionError = true
       }
     },
-    // TODO
     async confirmAddition() {
       let anErrorOccurred = false
       let answer = null
+
       answer = await this.addHeroToTeam(this.heroesToAdd.map(hero => hero._id))
       if (answer.error !== 0) anErrorOccurred = true
-      await this.getOrganisationById()
+
+      if (!anErrorOccurred) {
+        const updatedTeam = await this.getOrganisationById();
+        this.setCurrentTeam(updatedTeam.team);
+      }
+
       if (anErrorOccurred)
         this.showAdditionError = true
       else {
@@ -261,6 +259,5 @@ export default {
   async mounted() {
     await this.getHeroesData();
   },
-
 };
 </script>

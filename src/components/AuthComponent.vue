@@ -14,7 +14,6 @@
   </div>
 </template>
 
-
 <script>
 import { mapActions } from 'vuex';
 
@@ -23,25 +22,21 @@ export default {
     return {
       login: '',
       password: '',
-      error: '',
+      error: null,
     };
   },
   methods: {
-    ...mapActions('auth', {
-      performLogin: 'login',
-      getUser: 'getUser'
-    }),
+    ...mapActions('auth', ['login', 'getUser']),
     async gologin() {
       try {
-        await this.performLogin({ login: this.login, password: this.password });
-        console.log(await this.getUser(this.login));
+        await this.login({ login: this.login, password: this.password });
+        const user = await this.getUser(this.login);
+        console.log(user);
         this.$router.push('/');
       } catch (error) {
-        this.error = error.message;
+        this.error = error.message || 'Une erreur s\'est produite lors de la connexion.';
       }
     },
   },
 };
-
-
 </script>

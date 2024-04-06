@@ -246,7 +246,11 @@ export default {
     }
   },
   async mounted() {
+    if (this.getCurrentOrganisation) {
     await this.getTeamsData();
+  } else {
+    this.$router.push({ name: 'organisationView' });
+  }
   },
 
 };
