@@ -61,7 +61,10 @@ export default {
         },
         updateCurrentHero(state, data) {
             state.currentHero = data
-        }
+        },
+        addMemberToCurrentTeam(state, data) {
+            state.currentTeam.members.push(data)
+        },
     },
     actions: {
         async getOrganisationsData({commit}) {
@@ -154,7 +157,8 @@ export default {
             return answer
         },
         async removeHeroFromTeam({commit}, data) {
-            const answer = await AppService.removeHeroFromTeam(this.getters.getCurrentTeam._id, [data._id], this.getters.getOrganisationsPassword)
+            console.log('data ',data)
+            const answer = await AppService.removeHeroFromTeam(this.getters.getCurrentTeam._id, data)
             if (answer.error === 0) {
                 commit('removeHeroTeam', answer.data)
                 commit('removeHeroCurrentTeam', data)

@@ -49,6 +49,12 @@
       alertClosed() {
         this.$router.push({name:'teamsList'})
       }
+    },
+    //go to / if there are no teams selected
+    created() {
+      if (!this.getCurrentTeam) {
+        this.$router.push({name:'teamsList'})
+      }
     }
   }
 </script>

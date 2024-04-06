@@ -182,6 +182,7 @@ export default {
         return [this.getCurrentTeam];
       },
       set(selectedTeams) {
+        console.log(selectedTeams);
         this.setCurrentTeam(selectedTeams[0]);
       },
     },
@@ -249,7 +250,7 @@ export default {
     if (this.getCurrentOrganisation) {
     await this.getTeamsData();
   } else {
-    this.$router.push({ name: 'organisationView' });
+    this.$router.push({ name: 'organisationsList' });
   }
   },
 

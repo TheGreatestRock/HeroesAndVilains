@@ -142,6 +142,8 @@ async function removeHeroFromTeam(teamId, heroesId, secret){
                 'org-secret': secret
             }
         };
+        console.log('heroesId', heroesId)
+        console.log('teamId', teamId)
         const answer = await axios.patch(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/teams/removeheroes`, {
             idHeroes: heroesId,
             idTeam: teamId
