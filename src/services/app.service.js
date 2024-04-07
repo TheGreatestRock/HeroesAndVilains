@@ -183,6 +183,21 @@ async function getHeroes() {
     }
 }
 
+async function updateHero(heroId, updatedHeroData, secret) {
+    try {
+        const config = {
+            headers: {
+                'org-secret': secret
+            }
+        };
+        const answer = await axios.put(`https://apidemo.iut-bm.univ-fcomte.fr/herocorp/heroes/update?org-secret=${secret}`, updatedHeroData, config);
+        return answer.data;
+    } catch (err) {
+        console.error(err);
+        return {error: 1, status: 404, data: 'unexpected error'};
+    }
+}
+
 export default {
     getOrganisations,
     createOrganisation,
@@ -196,5 +211,6 @@ export default {
     removeHeroFromTeam,
     getHeroById,
     createHero,
-    getHeroes
+    getHeroes,
+    updateHero
 }

@@ -1,7 +1,5 @@
 <template>
   <div class="ma-10">
-
-
     <h2>List of all heroes</h2>
 
     <!-- Buttons -->
@@ -42,14 +40,13 @@
         <template slot="item.actions" slot-scope="{ item }">
           <v-icon
               small
-              @click="delectionAction(item)"
+              @click="deletionAction(item)"
           >
             mdi-delete
           </v-icon>
         </template>
       </v-data-table>
     </v-card>
-
 
     <!-- Dialog to create new hero -->
     <v-dialog persistent v-model="showCreateDialog">
@@ -153,11 +150,32 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!--dialog to modify hero-->
+    <v-dialog persistent v-model="showModifyDialog">
+      <v-card>
+        <v-card-title>Modify Hero</v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-text-field label="Real Name" v-model="modifiedHero.realName"></v-text-field>
+            </v-row>
+            <v-row>
+              <v-text-field label="Hero Name" v-model="modifiedHero.publicName"></v-text-field>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="red darken-1" text @click="showModifyDialog = false; modifiedHero = {}">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="confirmModify">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "HeroList",
@@ -175,16 +193,18 @@ export default {
     showDeletionError: false,
     showAdditionDialog: false,
     showAdditionError: false,
-    heroCreation: {realName: "", publicName: ""},
+    showModifyDialog: false,
+    modifiedHero: {},
+    heroCreation: { realName: "", publicName: "" },
     heroToDelete: {},
-    heroesToAdd: []
+    heroesToAdd: [],
   }),
   computed: {
     ...mapGetters(["getHeroes", "getCurrentHero", "getCurrentTeam", "getCurrentOrganisation"]),
     headers() {
-      let headers = [{text: 'Public Name', value: 'publicName'}, {text: 'Real Name', value: 'realName'}]
+      let headers = [{ text: 'Public Name', value: 'publicName' }, { text: 'Real Name', value: 'realName' }]
       if (this.heroList)
-        headers.push({text: 'Actions', value: 'actions', sortable: false})
+        headers.push({ text: 'Actions', value: 'actions', sortable: false })
       return headers
     },
     selected: {
@@ -205,59 +225,79 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam", "addHeroToTeam"]),
+    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam", "addHeroToTeam", "updateHero"]),
     selectHero() {
-      // TODO Add popup
+      if (this.getCurrentHero) {
+        this.modifiedHero = this.getCurrentHero;
+        this.showModifyDialog = true;
+      }
     },
     async confirmCreate() {
       const answer = await this.createHero(this.heroCreation);
       if (answer.error === 0) {
-        this.heroCreation = {realName: "", publicName: ""};
-        // await this.getTeamsData();
+        this.heroCreation = { realName: "", publicName: "" };
         this.showCreateDialog = false;
         this.showCreationError = false;
-
-        // If the component is used to display an organisation's teams
         if (this.heroList) {
-          await this.addHeroToTeam(answer.data._id)
-          // await this.getOrganisationById()
+          await this.addHeroToTeam(answer.data._id);
         }
+        await this.getOrganisationById();
       } else {
         console.log(answer);
         this.showCreationError = true;
       }
     },
-    delectionAction(hero) {
-      this.heroToDelete = hero
-      this.showDeletionDialog = true
+    deletionAction(hero) {
+      console.log('hero', hero);
+      this.heroToDelete = hero;
+      this.showDeletionDialog = true;
     },
     async confirmDeletion() {
-      const answer = await this.removeHeroFromTeam(this.heroToDelete)
+      console.log('g', this.heroToDelete);
+      const answer = await this.removeHeroFromTeam(this.heroToDelete);
       if (answer.error === 0) {
-        this.heroToDelete = {}
-        // await this.getOrganisationById()
-        this.showDeletionDialog = false
-        this.showDeletionError = false
+        console.log('a',answer);
+        this.heroToDelete = {};
+        console.log('f',this.heroToDelete);
+        this.showDeletionDialog = false;
+        console.log('b',this.showDeletionDialog);
+        this.showDeletionError = false;
+        console.log('f',this.showDeletionError);
+        await this.getOrganisationById();
       } else {
-        console.log(answer)
-        this.showDeletionError = true
+        console.log(answer);
+        this.showDeletionError = true;
       }
     },
-    // TODO
     async confirmAddition() {
-      let anErrorOccurred = false
-      let answer = null
-      answer = await this.addHeroToTeam(this.heroesToAdd.map(hero => hero._id))
-      if (answer.error !== 0) anErrorOccurred = true
-      await this.getOrganisationById()
-      if (anErrorOccurred)
-        this.showAdditionError = true
-      else {
-        this.heroesToAdd = []
-        this.showAdditionError = false
-        this.showAdditionDialog = false
+      let anErrorOccurred = false;
+      const answer = await this.addHeroToTeam(this.heroesToAdd.map(hero => hero._id));
+      if (answer.error !== 0) anErrorOccurred = true;
+      await this.getOrganisationById();
+      if (anErrorOccurred) {
+        this.showAdditionError = true;
+      } else {
+        this.heroesToAdd = [];
+        this.showAdditionError = false;
+        this.showAdditionDialog = false;
+      } 
+    },
+    async confirmModify() {
+      const answer = await this.updateHero(this.modifiedHero);
+      if (answer.error === 0) {
+        this.modifiedHero = {};
+        this.showModifyDialog = false;
+        this.showCreationError = false;
+        await this.getOrganisationById();
+      } else {
+        console.log(answer);
+        this.showCreationError = true;
       }
-    }
+    },
+    modifyAction(hero) {
+      this.modifiedHero = hero;
+      this.showModifyDialog = true;
+    },
   },
   async mounted() {
     await this.getHeroesData();

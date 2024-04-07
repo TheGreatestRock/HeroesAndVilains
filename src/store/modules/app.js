@@ -160,6 +160,7 @@ export default {
       console.log('data ',data)
       const answer = await AppService.removeHeroFromTeam(this.getters.getCurrentTeam._id, data)
       if (answer.error === 0) {
+        console.log('answer ',answer)
         commit('removeHeroTeam', answer.data)
         commit('removeHeroCurrentTeam', data)
       } else
@@ -189,6 +190,23 @@ export default {
     },
     async setCurrentHero({commit}, data){
       commit('updateCurrentHero', data)
-    }
+    },
+    async updateHero({ commit, getters }, updatedHeroData) {
+        try {
+            console.log('updatedHeroData:', updatedHeroData);
+          if (!getters.getCurrentHero) {
+            throw new Error('No current hero selected.');
+          }
+          const heroId = getters.getCurrentHero._id;
+          console.log('heroId:', heroId);
+          const updatedHero = await AppService.updateHero(heroId, updatedHeroData, getters.getOrganisationsPassword);
+            commit('updateCurrentHero', updatedHero.data);
+          console.log('updatedHero:', updatedHero);
+          return updatedHero;
+        } catch (error) {
+          console.error('Error updating hero:', error.message);
+          return { error: 1, data: error.message };
+        }
+      },  
   },
 }
