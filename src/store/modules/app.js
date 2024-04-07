@@ -18,7 +18,7 @@ export default {
     getTeams: state => state.teams,
     getCurrentTeam: state => state.currentTeam,
     getHeroes: state => state.heroes,
-    getCurrentHero: state => state.currentHero,
+    getCurrentHeroes: state => state.currentHero,
     isAuthenticated: state => !!state.organisationsPassword && !!state.currentOrganisation
   },
   mutations: {
@@ -194,10 +194,10 @@ export default {
     async updateHero({ commit, getters }, updatedHeroData) {
         try {
             console.log('updatedHeroData:', updatedHeroData);
-          if (!getters.getCurrentHero) {
+          if (!getters.getCurrentHeroes) {
             throw new Error('No current hero selected.');
           }
-          const heroId = getters.getCurrentHero._id;
+          const heroId = getters.getCurrentHeroes._id;
           console.log('heroId:', heroId);
           const updatedHero = await AppService.updateHero(heroId, updatedHeroData, getters.getOrganisationsPassword);
             commit('updateCurrentHero', updatedHero.data);

@@ -4,9 +4,8 @@
         v-model="showLoginDialog"
         persistent>
       <v-card>
-        <v-card-title>Login to organisation {{
-            getCurrentOrganisation ? getCurrentOrganisation.name : ''
-          }}
+        <v-card-title>
+          Login to organisation {{ getCurrentOrganisation ? getCurrentOrganisation.name : '' }}
         </v-card-title>
         <v-card-text>
           <v-alert
@@ -61,20 +60,21 @@ export default {
     ...mapActions(['setOrganisationsPassword', 'getOrganisationById']),
     async connect() {
       await this.setOrganisationsPassword(this.password);
-      const answer = await this.getOrganisationById()
-      console.log(answer)
+      const answer = await this.getOrganisationById();
       if (answer.error === 0) {
-        this.showLoginError = false
-        this.showLoginError = false
-      } else
-        this.showLoginError = true
+        this.showLoginError = false;
+        this.showLoginError = false;
+      } else {
+        this.showLoginError = true;
+        this.$emit('login-error', 'Wrong password');
+      }
     },
     cancelLogin() {
       this.$router.push({name: 'organisationsList'})
     },
     mounted() {
-      this.password = ''
-      this.showLoginError = false
+      this.password = '';
+      this.showLoginError = false;
     }
   }
 }

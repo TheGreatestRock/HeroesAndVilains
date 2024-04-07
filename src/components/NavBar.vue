@@ -44,11 +44,6 @@
       toggleDrawer() {
         this.drawer = !this.drawer;
       },
-      /*toggleAuthentication() { 
-        var audio = new Audio(require('@/assets/pouet.mp3'))
-        audio.play()     
-        window.alert("pouet")
-      },*/
       navigate(path) {
         if (this.$route.path !== path) {
           this.$router.push(path);

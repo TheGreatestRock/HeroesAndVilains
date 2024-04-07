@@ -18,18 +18,6 @@
       </v-row>
     </v-container>
 
-    <!-- Error dialog when component shown but no organisation is selected -->
-    <v-dialog v-model="isVisible" persistent max-width="300px">
-      <v-card>
-        <v-card-title class="text-h5">Error</v-card-title>
-        <v-card-text>No organisation is currently selected/ Incorrect password</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="red darken-1" text @click="alertClosed">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <!-- Connection dialog to log in -->
     <LoginDialog/>
   </div>
@@ -53,6 +41,13 @@ export default {
       return !this.getCurrentOrganisation
     }
   },
+  watch: {
+    isVisible(newValue) {
+      if (newValue) {
+        this.$emit('error', 'No organisation is currently selected/ Incorrect password');
+      }
+    },
+  },
   methods: {
     ...mapActions(['setOrganisationsPassword', 'getOrganisationById']),
     alertClosed() {
@@ -61,3 +56,6 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+</style>

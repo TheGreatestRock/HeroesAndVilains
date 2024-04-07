@@ -9,12 +9,16 @@ const AuthService = {
   },
   async getUser(login) {
     const xsrfToken = localStorage.getItem('xsrfToken');
-    console.log(xsrfToken);
-    var response = await axios.get(`https://apidemo.iut-bm.univ-fcomte.fr/authapi/user/getuser/${login}`, {
+    const jwt = localStorage.getItem('jwt');
+    console.log('jwt', jwt);
+    console.log('token', xsrfToken);
+    console.log('login', login);
+    const config = {
       headers: {
-        'x-xsrf-token': xsrfToken,
-      },
-    });
+        "x-xsrf-token": xsrfToken,
+      }
+    };
+    var response = await axios.get(`https://apidemo.iut-bm.univ-fcomte.fr/authapi/user/getuser/${login}`, config);
     return response;
   },
 };

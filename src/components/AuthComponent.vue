@@ -33,10 +33,10 @@ export default {
         console.log(this.password);
         await this.login({ login: this.username, password: this.password });
         const user = await this.getUser(this.username);
-        console.log(user);
+        console.log('user ',user);
         this.$router.push('/');
       } catch (error) {
-        this.error = error.message || 'Une erreur s\'est produite lors de la connexion.';
+        this.$emit('error', this.error);
       }
     },
   },

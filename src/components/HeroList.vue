@@ -225,7 +225,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam", "addHeroToTeam", "updateHero"]),
+    ...mapActions(["getHeroesData", "setCurrentHero", "createHero", "getOrganisationById", "addTeamToOrganisation", "removeHeroFromTeam", "addHeroToTeam", "updateHero"]),
     selectHero() {
       if (this.getCurrentHero) {
         this.modifiedHero = this.getCurrentHero;
@@ -244,7 +244,7 @@ export default {
         await this.getOrganisationById();
       } else {
         console.log(answer);
-        this.showCreationError = true;
+        this.$emit('error', 'Error creating hero');
       }
     },
     deletionAction(hero) {
@@ -266,7 +266,7 @@ export default {
         await this.getOrganisationById();
       } else {
         console.log(answer);
-        this.showDeletionError = true;
+        this.$emit('error', 'Error deleting hero');
       }
     },
     async confirmAddition() {
@@ -275,7 +275,7 @@ export default {
       if (answer.error !== 0) anErrorOccurred = true;
       await this.getOrganisationById();
       if (anErrorOccurred) {
-        this.showAdditionError = true;
+        this.$emit('error', 'Error adding hero');
       } else {
         this.heroesToAdd = [];
         this.showAdditionError = false;
@@ -291,7 +291,7 @@ export default {
         await this.getOrganisationById();
       } else {
         console.log(answer);
-        this.showCreationError = true;
+        this.$emit('error', 'Error modifying hero');
       }
     },
     modifyAction(hero) {

@@ -248,10 +248,10 @@ export default {
   },
   async mounted() {
     if (this.getCurrentOrganisation) {
-    await this.getTeamsData();
-  } else {
-    this.$router.push({ name: 'organisationsList' });
-  }
+      await this.getTeamsData();
+    } else {
+      this.$router.push({ name: 'organisationsList' });
+    }
   },
 
 };
