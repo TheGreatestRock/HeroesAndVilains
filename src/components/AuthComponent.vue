@@ -2,8 +2,8 @@
   <div>
     <h1>Connexion</h1>
     <form @submit.prevent="gologin">
-      <label for="login">Identifiant :</label>
-      <input type="text" id="login" v-model="login" required>
+      <label for="username">Identifiant :</label>
+      <input type="text" id="username" v-model="username" required>
       <br>
       <label for="password">Mot de passe :</label>
       <input type="password" id="password" v-model="password" required>
@@ -20,7 +20,7 @@ import { mapActions } from 'vuex';
 export default {
   data() {
     return {
-      login: '',
+      username: '',
       password: '',
       error: null,
     };
@@ -29,8 +29,10 @@ export default {
     ...mapActions('auth', ['login', 'getUser']),
     async gologin() {
       try {
-        await this.login({ login: this.login, password: this.password });
-        const user = await this.getUser(this.login);
+        console.log(this.username);
+        console.log(this.password);
+        await this.login({ login: this.username, password: this.password });
+        const user = await this.getUser(this.username);
         console.log(user);
         this.$router.push('/');
       } catch (error) {

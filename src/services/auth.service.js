@@ -1,19 +1,21 @@
 import axios from 'axios';
 
 const AuthService = {
-  login(credentials) {
-    var response = axios.post('https://apidemo.iut-bm.univ-fcomte.fr/authapi/auth/signin', credentials);
+  async login(credentials) {
+    console.log(credentials);
+    var response = await axios.post('https://apidemo.iut-bm.univ-fcomte.fr/authapi/auth/signin', credentials);
     console.log(response);
     return response;
   },
-  getUser(login) {
+  async getUser(login) {
     const xsrfToken = localStorage.getItem('xsrfToken');
     console.log(xsrfToken);
-    return axios.get(`https://apidemo.iut-bm.univ-fcomte.fr/authapi/user/getuser/${login}`, {
+    var response = await axios.get(`https://apidemo.iut-bm.univ-fcomte.fr/authapi/user/getuser/${login}`, {
       headers: {
         'x-xsrf-token': xsrfToken,
       },
     });
+    return response;
   },
 };
 
