@@ -50,7 +50,6 @@
       </v-data-table>
     </v-card>
 
-    {{ addableHero }}
 
     <!-- Dialog to create new hero -->
     <v-dialog persistent v-model="showCreateDialog">
@@ -197,7 +196,9 @@ export default {
       },
     },
     addableHero() {
-      return this.getHeroes
+      return this.getHeroes.filter(hero => {
+        return !this.members.some(member => member._id === hero._id);
+      });
     },
     members() {
       return this.getCurrentTeam.members
